@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+</head>
+<body>
+
+<header>
+<nav class="navbar navbar-dark bg-dark shadow ">
+    <div th:object="${user.getRoles()}">
+        <div th:object="${users}">
+            <a class="navbar-text text-white font-weight-bold" th:text="${user.getEmail()}"> </a>
+            <a class="navbar-text text-white"
+               th:text=" ' with roles : ' "></a>
+            <a>
+                <th:block th:each="role : ${user.getRoles()}">
+                    <a class="navbar-text text-white font-weight-bold" th:text="${role.getRole()} ">,</a>
+                </th:block>
+            </a>
+
+        </div>
+    </div>
+    <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="/logout">Logout</a>
+        </li>
+    </ul>
+</nav>
+</header>
+<div>
+    <h2 th:align="center" th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h2>
+</div>
+
+<div class="row">
+    <div class="container">
+        <h3 class="text-center">All Users</h3>
+        <hr>
+        <div class="container text-left">
+
+            <a href="/admin/new"class="btn btn-success">Add New User</a>
+        </div>
+        <br>
+
+
+<form th:align="center" th:action="@{/profile}" method="get">
+    <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+    <input type="submit" value="My profile"/>
+</form>
+<br>
+<form th:align="center" th:action="@{/users1}" method="get">
+    <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+    <input type="submit" value="Users"/>
+</form>
+<br>
+<form th:align="center" th:action="@{/logout}" method="post">
+    <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+    <input type="submit" value="Sign Out"/>
+</form>
+<br>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.springframework.org/security/tags" version="2.0"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Form</title>
+    <link rel="shortcut icon" href="http://faviconka.ru/ico/faviconka_ru_1463.ico" type="image/x-icon">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container col-md-5">
+    <sec:authorize access="isAuthenticated()">
+        <div class="card">
+            <div class="card-body">
+                <form action="/users1/edit" method="post">
+                    <caption>
+                        <h2>
+                            Edit User
+                        </h2>
+                    </caption>
+                    <!--                    <input type="hidden" name="_csrf" value="{{_csrf.token}}">-->
+                    <input type="hidden" name="id" th:value='${user.getId()}'/>
+
+                    <fieldset class="form-group">
+                        <label>User Name</label> <input type="text"
+                                                        class="form-control"
+                                                        th:value='${user.getFirstName()}'
+                                                        name="name" required="required"/>
+                    </fieldset>
+
+                    <fieldset class="form-group">
+                        <label>User Last Name</label> <input type="text"
+                                                             class="form-control"
+                                                             th:value='${user.getLastName()}'
+                                                             name="last_name" required="required"/>
+                    </fieldset>
+
+                    <fieldset class="form-group">
+                        <label>User Email</label> <input type="text"
+                                                         class="form-control"
+                                                         th:value='${user.getEmail()}'
+                                                         name="email" required="required">
+                    </fieldset>
+
+                    <fieldset class="form-group">
+                        <label>User Login</label> <input type="text"
+                                                         class="form-control"
+                                                         th:value='${user.getLogin()}'
+                                                         name="login" required="required">
+                    </fieldset>
+
+                    <fieldset class="form-group">
+                        <label>User Password</label> <input type="text"
+                                                            class="form-control"
+                                                            th:value='${user.getPassword()}'
+                                                            name="password" required="required">
+                    </fieldset>
+
+                    <fieldset class="form-group">
+                        <label>User Role</label> <input type="text"
+                                                        class="form-control"
+                                                        th:value='USER'
+                                                        name="role" required="required">
+                    </fieldset>
+
+                    <fieldset class="form-group" th:if="${user.getRoles()} != null">
+                        <label>Current User Roles:</label>
+                        <ul>
+                            <th:block th:each="role : ${user.getRoles()}">
+                                <li th:text="${role.getRole()} ">..</li>
+                            </th:block>
+                        </ul>
+                    </fieldset>
+
+                    <p>
+                        <button type="reset">Очистить форму</button>
+                        <button type="submit">Отправить форму</button>
+                        <button class="button" onclick="location.href='/users1'">Вернуться к списку</button>
+                    </p>
+
+                </form>
+            </div>
+        </div>
+    </sec:authorize>
+</div>
+</body>
+</html>

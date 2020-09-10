@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User page</title>
+    <link rel="shortcut icon" href="http://faviconka.ru/ico/faviconka_ru_1463.ico" type="image/x-icon">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-dark bg-dark shadow ">
+        <div th:object="${user.getRoles()}">
+            <div th:object="${user}">
+                <a class="navbar-text text-white font-weight-bold" th:text="${user.getEmail()}"> </a>
+                <a class="navbar-text text-white"
+                   th:text=" ' with roles : ' "></a>
+                <a>
+                    <th:block th:each="role : ${user.getRoles()}">
+                        <a class="navbar-text text-white font-weight-bold" th:text="${role.getRole()} ">,</a>
+                    </th:block>
+                </a>
+
+            </div>
+        </div>
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <p></p>
+            <div class="btn-group-vertical btn-block">
+                <button class="btn btn-primary text-left" type="button">
+                    <a class="text-light" >User </a>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-10 vh-100 bg-light text-dark">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+                <h1 class="h2">User information-page</h1>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4>About user</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th class="h5">ID</th>
+                            <th class="h5">First Name</th>
+                            <th class="h5">Last Name</th>
+                            <th class="h5">Age</th>
+                            <th class="h5">Email</th>
+                            <th class="h5">Password</th>
+                            <th class="h5">Role</th>
+                        </tr>
+                        </thead>
+
+                        <tr th:object="${user}">
+                            <td th:text="${user.getId()}"></td>
+                            <td th:text="${user.getFirstName()}"></td>
+                            <td th:text="${user.getLastName()}"></td>
+                            <td th:text="${user.getEmail()}"></td>
+                            <td th:text="${user.getLogin()}"></td>
+                            <td th:text="${user.getPassword()}"></td>
+                            <td>
+                                <span style="margin-right: 5px" th:each="roles : ${user.roles}"
+                                      th:text="${roles.role}"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

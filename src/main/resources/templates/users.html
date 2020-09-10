@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+    <title>Admin panel</title>
+    <link rel="shortcut icon" href="http://faviconka.ru/ico/faviconka_ru_1463.ico" type="image/x-icon">
+    <SCRIPT>
+        document.write("<h1> Привет, мир!</h1>");
+    </SCRIPT>
+</head>
+<body>
+
+<!--<script type="text/javascript">-->
+<!--    async function getUsers() {-->
+<!--        let users = [];-->
+<!--        let user = fetch('/users').then(-->
+<!--            successResponse => {-->
+<!--                if (successResponse.status != 200) {-->
+<!--                    return null;-->
+<!--                } else {-->
+<!--                    return successResponse.json();-->
+<!--                }-->
+<!--            },-->
+<!--            failResponse => {-->
+<!--                return null;-->
+<!--            }-->
+<!--        );-->
+<!--        users.push(user);-->
+<!--        let results = await Promise.all(users);-->
+
+<!--        document.getElementById('tbody').innerHTML = "<tr>" +-->
+<!--            "<td>" + results[0][0]['id'] + "</td>"-->
+<!--        "<td>" + results[0][0]['name'] + "</td>"-->
+<!--        "<td>" + results[0][0]['last_name'] + "</td>"-->
+<!--        "<td>" + results[0][0]['email'] + "</td>"-->
+<!--        "<td>" + results[0][0]['login'] + "</td>"-->
+<!--        "<td>" + results[0][0]['password'] + "</td>"-->
+<!--        "<td>" + results[0][0]['role'] + "</td>" + "</tr>"-->
+
+<!--        return results;-->
+<!--    }-->
+<!--</script>-->
+
+<input type="button" onclick="getUsers()" value="Get Users">
+<header>
+    <nav class="navbar navbar-dark bg-dark shadow ">
+
+<!--        <div th:object="${user}">-->
+<!--            <a class="navbar-text text-white font-weight-bold" th:text="${user.getEmail()}"> </a>-->
+<!--            <a class="navbar-text text-white"-->
+<!--               th:text=" ' with roles : ' "></a>-->
+<!--            <a>-->
+<!--                <th:block th:each="role : ${user.getRoles()}">-->
+<!--                    <a class="navbar-text text-white font-weight-bold" th:text="${role.getRole()} ">,</a>-->
+<!--                </th:block>-->
+<!--            </a>-->
+
+<!--        </div>-->
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <p></p>
+            <div class="btn-group-vertical btn-block">
+                <button class="btn btn-primary pl-3 text-left" type="button">
+                    <a class="text-light ">Admin </a>
+                </button>
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                <a href="/profile" class="card-link pl-3 mb-10 py-3 ">User</a>
+            </div>
+        </div>
+        <div class="col-md-10 vh-100 bg-light">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+                <h1 class="h2">Admin panel</h1>
+            </div>
+            <div class="row">
+                <div class="card-header bg-white mb-10 py-3 mx-md-3 border">
+                    <h5>Users table</h5>
+                </div>
+                <a href="/users1/add" class="card-link mb-10 py-3 ">New User</a>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4>All users</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th class="h5">ID</th>
+                            <th class="h5">First Name</th>
+                            <th class="h5">Last Name</th>
+                            <th class="h5">Email</th>
+                            <th class="h5">Login</th>
+                            <th class="h5">Password</th>
+                            <th class="h5">Role</th>
+                            <th class="h5">Edit</th>
+                            <th class="h5">Delete</th>
+                        </tr>
+                        </thead>
+
+<!--                        <tr th:each="currentUser : ${users}">-->
+<!--                            <td th:text="${currentUser.getId()}"></td>-->
+<!--                            <td th:text="${currentUser.getFirstName()}"></td>-->
+<!--                            <td th:text="${currentUser.getLastName()}"></td>-->
+<!--                            <td th:text="${currentUser.getEmail()}"></td>-->
+<!--                            <td th:text="${currentUser.getLogin()}"></td>-->
+<!--                            <td th:text="${currentUser.getPassword()}"></td>-->
+<!--                            <td>-->
+<!--                                <span style="margin-right: 5px" th:each="roles : ${currentUser.roles}"-->
+<!--                                      th:text="${roles.role}"></span>-->
+<!--                            </td>-->
+
+<!--                            <td>-->
+<!--                                <form action="/users1/edit" method="post">-->
+<!--                                    <div class="form-row text-center">-->
+<!--                                        <div class="col-12">-->
+<!--                                            <button type="button" class="btn btn-primary" data-toggle="modal"-->
+<!--                                                    th:data-target="${'#edituser'+currentUser.id}">Edit-->
+<!--                                            </button>-->
+<!--                                            &lt;!&ndash; Edit Modal &ndash;&gt;-->
+<!--                                            <div class="modal fade" th:id="${'edituser'+currentUser.id}" tabindex="-1"-->
+<!--                                                 role="dialog" aria-labelledby="myModalLabel"-->
+<!--                                                 aria-hidden="true">-->
+<!--                                                <div class="modal-dialog">-->
+<!--                                                    <div class="modal-content">-->
+<!--                                                        <div class="modal-header">-->
+<!--                                                            <h5 class="modal-title" id="editModalLabel">Edit user</h5>-->
+<!--                                                            <button type="button" class="close" data-dismiss="modal"-->
+<!--                                                                    aria-label="Close">-->
+<!--                                                                <span aria-hidden="true">&times;</span>-->
+<!--                                                            </button>-->
+<!--                                                        </div>-->
+<!--                                                        <div class="modal-body">-->
+<!--                                                            <div class="col-md-6 offset-md-3">-->
+
+<!--                                                                <label class="col-form-label"-->
+<!--                                                                       for="userIdEdit"><strong>ID</strong></label>-->
+<!--                                                                <input class="form-control" id="userIdEdit"-->
+<!--                                                                       name="user-id" required type="text"-->
+<!--                                                                       th:value="${currentUser.id}" disabled>-->
+
+<!--                                                                <label class="col-form-label"-->
+<!--                                                                       for="firstNameEdit"><strong>First-->
+<!--                                                                    Name</strong></label>-->
+<!--                                                                <input class="form-control" id="firstNameEdit"-->
+<!--                                                                       name="name"-->
+<!--                                                                       th:value="${currentUser.firstName}" required-->
+<!--                                                                       type="text">-->
+<!--                                                                <br>-->
+
+<!--                                                                <label class="col-form-label"-->
+<!--                                                                       for="lastNameEdit"><strong>Last-->
+<!--                                                                    Name</strong></label>-->
+<!--                                                                <input class="form-control" id="lastNameEdit"-->
+<!--                                                                       name="last_name"-->
+<!--                                                                       th:value="${currentUser.lastName}" required-->
+<!--                                                                       type="text">-->
+<!--                                                                <br>-->
+
+
+<!--                                                                <label class="col-form-label"-->
+<!--                                                                       for="emailEdit"><strong>Email</strong></label>-->
+<!--                                                                <input class="form-control" id="emailEdit"-->
+<!--                                                                       name="email"-->
+<!--                                                                       th:value="${currentUser.email}" required-->
+<!--                                                                       type="text">-->
+<!--                                                                <br>-->
+
+<!--                                                                <label class="col-form-label"-->
+<!--                                                                       for="loginEdit"><strong>Login</strong></label>-->
+<!--                                                                <input class="form-control" id="loginEdit"-->
+<!--                                                                       name="login"-->
+<!--                                                                       th:value="${currentUser.login}" required-->
+<!--                                                                       type="text">-->
+<!--                                                                <br>-->
+
+<!--                                                                <label class="col-form-label"-->
+<!--                                                                       for="passwordEdit"><strong>Password</strong></label>-->
+<!--                                                                <input class="form-control" id="passwordEdit"-->
+<!--                                                                       name="password"-->
+<!--                                                                       th:value="${currentUser.password}" required-->
+<!--                                                                       type="text">-->
+<!--                                                                <br>-->
+<!--                                                                <fieldset class="form-group">-->
+<!--                                                                    <label><strong>Role</strong></label>-->
+<!--                                                                    <select class="form-control" id="ids"-->
+<!--                                                                            name="role"-->
+<!--                                                                            required-->
+<!--                                                                            th:value='USER'>-->
+<!--                                                                        <option name="ADMIN" value="USER">USER-->
+<!--                                                                        </option>-->
+<!--                                                                        <option name="USER" value="ADMIN">ADMIN-->
+<!--                                                                        </option>-->
+<!--                                                                    </select>-->
+<!--                                                                </fieldset>-->
+<!--                                                                <br>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                        <div class="modal-footer">-->
+<!--                                                            <input type="hidden" name="_csrf" value="{{_csrf.token}}">-->
+<!--                                                            <button type="button" class="btn btn-secondary"-->
+<!--                                                                    data-dismiss="modal">Close-->
+<!--                                                            </button>-->
+<!--                                                            <button type="submit" class="btn btn-primary" name="id"-->
+<!--                                                                    th:value="${currentUser.id}">Save changes-->
+<!--                                                            </button>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            &lt;!&ndash;End of Edit Modal &ndash;&gt;-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </form>-->
+<!--                            </td>-->
+<!--                            <td>-->
+
+<!--                                <button type="button" class="btn btn-danger" data-toggle="modal"-->
+<!--                                        th:data-target="${'#deleteuser'+currentUser.id}">Delete-->
+<!--                                </button>-->
+<!--                                &lt;!&ndash; Delete Modal &ndash;&gt;-->
+<!--                                <div class="modal fade" th:id="${'deleteuser'+currentUser.id}" tabindex="-1"-->
+<!--                                     role="dialog" aria-labelledby="myDeleteModalLabel" aria-hidden="true">-->
+<!--                                    <form th:action="@{/users/delete(id=${currentUser.id})}" method="get">-->
+<!--                                        <div class="modal-dialog modal-dialog-centered" role="document">-->
+<!--                                            <div class="modal-content">-->
+<!--                                                <div class="modal-header">-->
+<!--                                                    <h5 class="modal-title" id="myDeleteModalLabel">Delete user</h5>-->
+<!--                                                    <button type="button" class="close" data-dismiss="modal"-->
+<!--                                                            aria-label="Close">-->
+<!--                                                        <span aria-hidden="true">&times;</span>-->
+<!--                                                    </button>-->
+<!--                                                </div>-->
+<!--                                                <div class="modal-body">-->
+<!--                                                    <div class="col-md-6 offset-md-3">-->
+
+<!--                                                        <label class="col-form-label"-->
+<!--                                                               for="userIdEdit"><strong>ID</strong></label>-->
+<!--                                                        <input class="form-control" id="userIdDelete"-->
+<!--                                                               name="user-id" required type="text"-->
+<!--                                                               th:value="${currentUser.id}" disabled>-->
+
+<!--                                                        <label class="col-form-label"-->
+<!--                                                               for="firstNameDelete"><strong>First Name</strong></label>-->
+<!--                                                        <input class="form-control" id="firstNameDelete"-->
+<!--                                                               name="name"-->
+<!--                                                               th:value="${currentUser.firstName}"-->
+<!--                                                               type="text" disabled>-->
+<!--                                                        <br>-->
+
+<!--                                                        <label class="col-form-label"-->
+<!--                                                               for="lastNameDelete"><strong>Last Name</strong></label>-->
+<!--                                                        <input class="form-control" id="lastNameDelete"-->
+<!--                                                               name="last_name"-->
+<!--                                                               th:value="${currentUser.lastName}"-->
+<!--                                                               type="text" disabled>-->
+<!--                                                        <br>-->
+
+
+<!--                                                        <label class="col-form-label"-->
+<!--                                                               for="emailDelete"><strong>Email</strong></label>-->
+<!--                                                        <input class="form-control" id="emailDelete"-->
+<!--                                                               name="email"-->
+<!--                                                               th:value="${currentUser.email}"-->
+<!--                                                               type="text" disabled>-->
+<!--                                                        <br>-->
+
+<!--                                                        <label class="col-form-label"-->
+<!--                                                               for="loginDelete"><strong>Login</strong></label>-->
+<!--                                                        <input class="form-control" id="loginDelete"-->
+<!--                                                               name="login"-->
+<!--                                                               th:value="${currentUser.login}"-->
+<!--                                                               type="text" disabled>-->
+<!--                                                        <br>-->
+
+<!--                                                        <label class="col-form-label"-->
+<!--                                                               for="passwordDelete"><strong>Password</strong></label>-->
+<!--                                                        <input class="form-control" id="passwordDelete"-->
+<!--                                                               name="password"-->
+<!--                                                               th:value="${currentUser.password}"-->
+<!--                                                               type="text" disabled>-->
+<!--                                                        <br>-->
+<!--                                                        <fieldset class="form-group">-->
+<!--                                                            <label><strong>Role</strong></label>-->
+<!--                                                            <select class="custom-select h-50" size="2"-->
+<!--                                                                    name="role"-->
+<!--                                                                    th:value="${currentUser.roles}" disabled>-->
+<!--                                                                <option value="USER">USER-->
+<!--                                                                </option>-->
+<!--                                                                <option value="ADMIN">ADMIN-->
+<!--                                                                </option>-->
+<!--                                                            </select>-->
+<!--                                                        </fieldset>-->
+<!--                                                        <br>-->
+<!--                                                    </div>-->
+<!--                                                    <input path="id" name="id"-->
+<!--                                                           type="hidden" placeholder="id"-->
+<!--                                                           class="form-control"-->
+<!--                                                           th:value="${currentUser.id}" readonly/>-->
+<!--                                                </div>-->
+<!--                                                <div class="modal-footer">-->
+<!--                                                    <button type="button" class="btn btn-secondary btn-sm"-->
+<!--                                                            data-dismiss="modal">Close-->
+<!--                                                    </button>-->
+<!--                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </form>-->
+<!--                                </div>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--<SCRIPT>-->
+<!--    $(document).ready(function () {-->
+
+<!--        $('a[data-toggle=modal], button[data-toggle=modal]').click(function () {-->
+
+<!--            var data_id = '';-->
+
+<!--            if (typeof $(this).data('id') !== 'undefined') {-->
+
+<!--                data_id = $(this).data('id');-->
+<!--            }-->
+
+<!--            $('#my_element_id').val(data_id);-->
+
+<!--            var data_firstname = '';-->
+
+<!--            if (typeof $(this).data('firstname') !== 'undefined') {-->
+
+<!--                data_firstname = $(this).data('firstname');-->
+<!--            }-->
+
+<!--            $('#my_element_firstname').val(data_firstname);-->
+
+<!--            const firstNameEdit = #my_element_firstname;-->
+<!--        })-->
+<!--    });-->
+
+<!--    //-->
+<!--    // $('#myModal').on('show.bs.modal', function (event) {-->
+<!--    //     const button = $(event.relatedTarget);-->
+<!--    //     const firstNameEdit = button.data('firstname');-->
+<!--    //     const lastNameEdit = button.data('lastname');-->
+<!--    //     const emailEdit = button.data('email');-->
+<!--    //     const loginEdit = button.data('login');-->
+<!--    //     const passwordEdit = button.data('password');-->
+<!--    //     const roleEdit = button.data('roles');-->
+<!--    //     const modal = $(this);-->
+<!--    //-->
+<!--    //     modal.find('#firstNameEdit').val(firstNameEdit);-->
+<!--    //     modal.find('#lastNameEdit').val(lastNameEdit);-->
+<!--    //     modal.find('#loginEdit').val(loginEdit);-->
+<!--    //     modal.find('#passwordEdit').val(passwordEdit);-->
+<!--    //     modal.find('#emailEdit').val(emailEdit);-->
+<!--    //     modal.find('#roleEdit').val(roleEdit);-->
+<!--    // })-->
+
+<!--</SCRIPT>-->
+<div>
+    <label class="col-form-label"
+           for="thingOne"><strong>Thing One</strong></label>
+    <input class="form-control" id="thingOne"
+           name="thing_one"
+           value="thing One"
+           disabled
+           type="text">
+    <br>
+    <label class="col-form-label"
+           for="thingTwo"><strong>Thing Two</strong></label>
+    <input class="form-control" id="thingTwo"
+           name="thing_two"
+           value="thing Two"
+           disabled
+           type="text">
+    <br>
+</div>
+
+<SCRIPT>
+    $(document).ready(function () {
+        console.log("Captain’s Log");
+    });
+</SCRIPT>
+<SCRIPT>
+    document.writeln("Writeln");
+</SCRIPT>
+<SCRIPT>
+    $(document).ready(function () {
+        document.writeln("Document.Writeln");
+    });
+</SCRIPT>
+
+<script type="text/javascript">
+    document.getElementById('thingTwo').innerHTML = "Thing Three"
+</script>
+
+<script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+<script src="/static/js/test2.js"></script>
+
+<!--<script src="/static/main.js" type="text/javascript" async></script>-->
+
+<!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"-->
+<!--        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"-->
+<!--        crossorigin="anonymous"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"-->
+<!--        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"-->
+<!--        crossorigin="anonymous"></script>-->
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"-->
+<!--        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"-->
+<!--        crossorigin="anonymous"></script>-->
+
+</body>
+</html>

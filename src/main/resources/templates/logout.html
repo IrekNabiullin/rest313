@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logging out</title>
+    <link rel="shortcut icon" href="http://faviconka.ru/ico/faviconka_ru_1463.ico" type="image/x-icon">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+</head>
+<body>
+<form class="form">
+    <div class="container col-md-5">
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Are you sure to log out?</h2>
+            </div>
+            <div class="card-body">
+                <br>
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                <button type="button" class="btn btn-primary btn-lg">
+                    <a class="text-light" href="/login?logout">Logout </a>
+                </button>
+                <button type="button" class="btn btn-secondary btn-lg">
+                    <a class="text-light" onclick="history.back();" >Back</a>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>

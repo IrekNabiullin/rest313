@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head th:fragment="head(title)"
+    meta charset="UTF-8">
+    <title>Hello</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    async function getUsers() {
+        let users = [];
+        let user = fetch('/users').then(
+            successResponse => {
+                if (successResponse.status != 200) {
+                    return null;
+                } else {
+                    return successResponse.json();
+                }
+            },
+            failResponse => {
+                return null;
+            }
+        );
+        users.push(user);
+        let results = await Promise.all(users);
+
+        document.getElementById('tbody').innerHTML = "<tr>" +
+            "<td>" + results[0][0]['id'] + "</td>"
+        "<td>" + results[0][0]['name'] + "</td>"
+        "<td>" + results[0][0]['last_name'] + "</td>"
+        "<td>" + results[0][0]['email'] + "</td>"
+        "<td>" + results[0][0]['login'] + "</td>"
+        "<td>" + results[0][0]['password'] + "</td>"
+        "<td>" + results[0][0]['role'] + "</td>" + "</tr>"
+
+        return results;
+    }
+</script>
+
+<input type="button" onclick="getUsers()" value="Get Users">
+
+</body>
+</html>
