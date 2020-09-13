@@ -36,6 +36,7 @@ public class UserController {
         modelMap.addAttribute("user", user);
         return "admin";
 //        return "users1";
+//        return "users";
     }
 
     @GetMapping(value = "/profile")
@@ -47,16 +48,14 @@ public class UserController {
     }
 
 
-
-
     @GetMapping(value = "/users1")
     public String getUsers(@RequestParam(name = "locale", defaultValue = "en", required = false) String locale, ModelMap modelMap,
                            Authentication authentication, HttpServletRequest request) {
-        modelMap.addAttribute("users", userService.listUsers());
         ResourceBundle bundle = ResourceBundle.getBundle("language_" + locale);
+        modelMap.addAttribute("usersHeadline", bundle.getString("usersHeadline"));
+        modelMap.addAttribute("users", userService.listUsers());
         User user = userService.getUserByName(authentication.getName());
         modelMap.addAttribute("user", user);
-        modelMap.addAttribute("usersHeadline", bundle.getString("usersHeadline"));
         return "users1";
     }
 

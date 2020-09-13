@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <title>Admin panel</title>
+    <link rel="shortcut icon" href="http://faviconka.ru/ico/faviconka_ru_1463.ico" type="image/x-icon">
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-dark bg-dark shadow ">
+        <div th:object="${user}">
+            <a class="navbar-text text-white font-weight-bold" th:text="${user.getEmail()}"> </a>
+            <a class="navbar-text text-white"
+               th:text=" ' with roles : ' "></a>
+            <a>
+                <th:block th:each="role : ${user.getRoles()}">
+                    <a class="navbar-text text-white font-weight-bold" th:text="${role.getRole()} ">,</a>
+                </th:block>
+            </a>
+        </div>
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <p></p>
+            <div class="btn-group-vertical btn-block">
+                <button class="btn btn-primary pl-3 text-left" type="button">
+                    <a class="text-light ">Admin </a>
+                </button>
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                <a href="/profile" class="card-link pl-3 mb-10 py-3 ">User</a>
+            </div>
+        </div>
+        <div class="col-md-10 vh-100 bg-light">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+                <h1 class="h2">Admin panel</h1>
+            </div>
+            <div class="row">
+                <div class="card-header bg-white mb-10 py-3 mx-md-3 border">
+                    <h5>Users table</h5>
+                </div>
+                <a href="/users1/add" class="card-link mb-10 py-3 ">New User</a>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4>All users</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th class="h5">ID</th>
+                            <th class="h5">First Name</th>
+                            <th class="h5">Last Name</th>
+                            <th class="h5">Email</th>
+                            <th class="h5">Login</th>
+                            <th class="h5">Password</th>
+                            <th class="h5">Role</th>
+                            <th class="h5">Edit</th>
+                            <th class="h5">Delete</th>
+                        </tr>
+                        </thead>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

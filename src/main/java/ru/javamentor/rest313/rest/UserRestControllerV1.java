@@ -4,17 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import ru.javamentor.rest313.model.User;
 import ru.javamentor.rest313.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserRestControllerV1 {
     private final UserService userService;
 
@@ -24,10 +27,13 @@ public class UserRestControllerV1 {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> read() {
+    public ResponseEntity<List<User>> read(Authentication authentication, ModelMap modelMap) {
         final List<User> users = userService.listUsers();
         System.out.println("REST controller. Reading users.");
-        return users != null &&  !users.isEmpty()
+        User user = userService.getUserByName(authentication.getName());
+        modelMap.addAttribute("user", user);
+        modelMap.addAttribute("users", users);
+        return users != null && !users.isEmpty()
                 ? new ResponseEntity<>(users, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

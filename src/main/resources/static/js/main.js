@@ -4,17 +4,15 @@ let modalBody = $('.modal-body');
 let modalFooter = $('.modal-footer');
 
 let clearFormButton = $('<button type="reset" class="btn btn-secondary">Clear</button>');
-let primaryButton = $('<button type="button" class="btn btn-primary"></button>');
-let dismissButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal"></button>');
-let dangerButton = $('<button type="button" class="btn btn-danger"></button>');
+let primaryButton = $('<button type="button" class="btn btn-primary">Btn1</button>');
+let dismissButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Btn2</button>');
+let dangerButton = $('<button type="button" class="btn btn-danger">Btn3</button>');
 
 $(document).ready(function(){
     viewAllUsers();
     defaultModal();
     console.log("Captain’s Log");
 });
-
-
 
 function defaultModal() {
     modal.modal({

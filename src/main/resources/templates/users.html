@@ -3,63 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+    <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
     <title>Admin panel</title>
     <link rel="shortcut icon" href="http://faviconka.ru/ico/faviconka_ru_1463.ico" type="image/x-icon">
-    <SCRIPT>
-        document.write("<h1> Привет, мир!</h1>");
-    </SCRIPT>
 </head>
 <body>
 
-<!--<script type="text/javascript">-->
-<!--    async function getUsers() {-->
-<!--        let users = [];-->
-<!--        let user = fetch('/users').then(-->
-<!--            successResponse => {-->
-<!--                if (successResponse.status != 200) {-->
-<!--                    return null;-->
-<!--                } else {-->
-<!--                    return successResponse.json();-->
-<!--                }-->
-<!--            },-->
-<!--            failResponse => {-->
-<!--                return null;-->
-<!--            }-->
-<!--        );-->
-<!--        users.push(user);-->
-<!--        let results = await Promise.all(users);-->
-
-<!--        document.getElementById('tbody').innerHTML = "<tr>" +-->
-<!--            "<td>" + results[0][0]['id'] + "</td>"-->
-<!--        "<td>" + results[0][0]['name'] + "</td>"-->
-<!--        "<td>" + results[0][0]['last_name'] + "</td>"-->
-<!--        "<td>" + results[0][0]['email'] + "</td>"-->
-<!--        "<td>" + results[0][0]['login'] + "</td>"-->
-<!--        "<td>" + results[0][0]['password'] + "</td>"-->
-<!--        "<td>" + results[0][0]['role'] + "</td>" + "</tr>"-->
-
-<!--        return results;-->
-<!--    }-->
-<!--</script>-->
-
-<input type="button" onclick="getUsers()" value="Get Users">
 <header>
     <nav class="navbar navbar-dark bg-dark shadow ">
 
-<!--        <div th:object="${user}">-->
-<!--            <a class="navbar-text text-white font-weight-bold" th:text="${user.getEmail()}"> </a>-->
-<!--            <a class="navbar-text text-white"-->
-<!--               th:text=" ' with roles : ' "></a>-->
-<!--            <a>-->
-<!--                <th:block th:each="role : ${user.getRoles()}">-->
-<!--                    <a class="navbar-text text-white font-weight-bold" th:text="${role.getRole()} ">,</a>-->
-<!--                </th:block>-->
-<!--            </a>-->
+        <div th:object="${user}">
+            <a class="navbar-text text-white font-weight-bold" th:text="${user.getEmail()}"> </a>
+            <a class="navbar-text text-white"
+               th:text=" ' with roles : ' ">with roles</a>
+            <a>
+                <th:block th:each="role : ${user.getRoles()}">
+                    <a class="navbar-text text-white font-weight-bold" th:text="${role.getRole()} ">,</a>
+                </th:block>
+            </a>
 
-<!--        </div>-->
+        </div>
         <ul class="navbar-nav px-3">
             <li class="nav-item text-nowrap">
                 <a class="nav-link" href="/logout">Logout</a>
@@ -94,8 +59,9 @@
                 <div class="card-header">
                     <h4>All users</h4>
                 </div>
+
                 <div class="card-body">
-                    <table class="table table-striped">
+                    <table class="table table-striped" id = "userTable">
                         <thead>
                         <tr>
                             <th class="h5">ID</th>
@@ -110,224 +76,51 @@
                         </tr>
                         </thead>
 
-<!--                        <tr th:each="currentUser : ${users}">-->
-<!--                            <td th:text="${currentUser.getId()}"></td>-->
-<!--                            <td th:text="${currentUser.getFirstName()}"></td>-->
-<!--                            <td th:text="${currentUser.getLastName()}"></td>-->
-<!--                            <td th:text="${currentUser.getEmail()}"></td>-->
-<!--                            <td th:text="${currentUser.getLogin()}"></td>-->
-<!--                            <td th:text="${currentUser.getPassword()}"></td>-->
-<!--                            <td>-->
-<!--                                <span style="margin-right: 5px" th:each="roles : ${currentUser.roles}"-->
-<!--                                      th:text="${roles.role}"></span>-->
-<!--                            </td>-->
-
-<!--                            <td>-->
-<!--                                <form action="/users1/edit" method="post">-->
-<!--                                    <div class="form-row text-center">-->
-<!--                                        <div class="col-12">-->
-<!--                                            <button type="button" class="btn btn-primary" data-toggle="modal"-->
-<!--                                                    th:data-target="${'#edituser'+currentUser.id}">Edit-->
-<!--                                            </button>-->
-<!--                                            &lt;!&ndash; Edit Modal &ndash;&gt;-->
-<!--                                            <div class="modal fade" th:id="${'edituser'+currentUser.id}" tabindex="-1"-->
-<!--                                                 role="dialog" aria-labelledby="myModalLabel"-->
-<!--                                                 aria-hidden="true">-->
-<!--                                                <div class="modal-dialog">-->
-<!--                                                    <div class="modal-content">-->
-<!--                                                        <div class="modal-header">-->
-<!--                                                            <h5 class="modal-title" id="editModalLabel">Edit user</h5>-->
-<!--                                                            <button type="button" class="close" data-dismiss="modal"-->
-<!--                                                                    aria-label="Close">-->
-<!--                                                                <span aria-hidden="true">&times;</span>-->
-<!--                                                            </button>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="modal-body">-->
-<!--                                                            <div class="col-md-6 offset-md-3">-->
-
-<!--                                                                <label class="col-form-label"-->
-<!--                                                                       for="userIdEdit"><strong>ID</strong></label>-->
-<!--                                                                <input class="form-control" id="userIdEdit"-->
-<!--                                                                       name="user-id" required type="text"-->
-<!--                                                                       th:value="${currentUser.id}" disabled>-->
-
-<!--                                                                <label class="col-form-label"-->
-<!--                                                                       for="firstNameEdit"><strong>First-->
-<!--                                                                    Name</strong></label>-->
-<!--                                                                <input class="form-control" id="firstNameEdit"-->
-<!--                                                                       name="name"-->
-<!--                                                                       th:value="${currentUser.firstName}" required-->
-<!--                                                                       type="text">-->
-<!--                                                                <br>-->
-
-<!--                                                                <label class="col-form-label"-->
-<!--                                                                       for="lastNameEdit"><strong>Last-->
-<!--                                                                    Name</strong></label>-->
-<!--                                                                <input class="form-control" id="lastNameEdit"-->
-<!--                                                                       name="last_name"-->
-<!--                                                                       th:value="${currentUser.lastName}" required-->
-<!--                                                                       type="text">-->
-<!--                                                                <br>-->
-
-
-<!--                                                                <label class="col-form-label"-->
-<!--                                                                       for="emailEdit"><strong>Email</strong></label>-->
-<!--                                                                <input class="form-control" id="emailEdit"-->
-<!--                                                                       name="email"-->
-<!--                                                                       th:value="${currentUser.email}" required-->
-<!--                                                                       type="text">-->
-<!--                                                                <br>-->
-
-<!--                                                                <label class="col-form-label"-->
-<!--                                                                       for="loginEdit"><strong>Login</strong></label>-->
-<!--                                                                <input class="form-control" id="loginEdit"-->
-<!--                                                                       name="login"-->
-<!--                                                                       th:value="${currentUser.login}" required-->
-<!--                                                                       type="text">-->
-<!--                                                                <br>-->
-
-<!--                                                                <label class="col-form-label"-->
-<!--                                                                       for="passwordEdit"><strong>Password</strong></label>-->
-<!--                                                                <input class="form-control" id="passwordEdit"-->
-<!--                                                                       name="password"-->
-<!--                                                                       th:value="${currentUser.password}" required-->
-<!--                                                                       type="text">-->
-<!--                                                                <br>-->
-<!--                                                                <fieldset class="form-group">-->
-<!--                                                                    <label><strong>Role</strong></label>-->
-<!--                                                                    <select class="form-control" id="ids"-->
-<!--                                                                            name="role"-->
-<!--                                                                            required-->
-<!--                                                                            th:value='USER'>-->
-<!--                                                                        <option name="ADMIN" value="USER">USER-->
-<!--                                                                        </option>-->
-<!--                                                                        <option name="USER" value="ADMIN">ADMIN-->
-<!--                                                                        </option>-->
-<!--                                                                    </select>-->
-<!--                                                                </fieldset>-->
-<!--                                                                <br>-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
-<!--                                                        <div class="modal-footer">-->
-<!--                                                            <input type="hidden" name="_csrf" value="{{_csrf.token}}">-->
-<!--                                                            <button type="button" class="btn btn-secondary"-->
-<!--                                                                    data-dismiss="modal">Close-->
-<!--                                                            </button>-->
-<!--                                                            <button type="submit" class="btn btn-primary" name="id"-->
-<!--                                                                    th:value="${currentUser.id}">Save changes-->
-<!--                                                            </button>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            &lt;!&ndash;End of Edit Modal &ndash;&gt;-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </form>-->
-<!--                            </td>-->
-<!--                            <td>-->
-
-<!--                                <button type="button" class="btn btn-danger" data-toggle="modal"-->
-<!--                                        th:data-target="${'#deleteuser'+currentUser.id}">Delete-->
-<!--                                </button>-->
-<!--                                &lt;!&ndash; Delete Modal &ndash;&gt;-->
-<!--                                <div class="modal fade" th:id="${'deleteuser'+currentUser.id}" tabindex="-1"-->
-<!--                                     role="dialog" aria-labelledby="myDeleteModalLabel" aria-hidden="true">-->
-<!--                                    <form th:action="@{/users/delete(id=${currentUser.id})}" method="get">-->
-<!--                                        <div class="modal-dialog modal-dialog-centered" role="document">-->
-<!--                                            <div class="modal-content">-->
-<!--                                                <div class="modal-header">-->
-<!--                                                    <h5 class="modal-title" id="myDeleteModalLabel">Delete user</h5>-->
-<!--                                                    <button type="button" class="close" data-dismiss="modal"-->
-<!--                                                            aria-label="Close">-->
-<!--                                                        <span aria-hidden="true">&times;</span>-->
-<!--                                                    </button>-->
-<!--                                                </div>-->
-<!--                                                <div class="modal-body">-->
-<!--                                                    <div class="col-md-6 offset-md-3">-->
-
-<!--                                                        <label class="col-form-label"-->
-<!--                                                               for="userIdEdit"><strong>ID</strong></label>-->
-<!--                                                        <input class="form-control" id="userIdDelete"-->
-<!--                                                               name="user-id" required type="text"-->
-<!--                                                               th:value="${currentUser.id}" disabled>-->
-
-<!--                                                        <label class="col-form-label"-->
-<!--                                                               for="firstNameDelete"><strong>First Name</strong></label>-->
-<!--                                                        <input class="form-control" id="firstNameDelete"-->
-<!--                                                               name="name"-->
-<!--                                                               th:value="${currentUser.firstName}"-->
-<!--                                                               type="text" disabled>-->
-<!--                                                        <br>-->
-
-<!--                                                        <label class="col-form-label"-->
-<!--                                                               for="lastNameDelete"><strong>Last Name</strong></label>-->
-<!--                                                        <input class="form-control" id="lastNameDelete"-->
-<!--                                                               name="last_name"-->
-<!--                                                               th:value="${currentUser.lastName}"-->
-<!--                                                               type="text" disabled>-->
-<!--                                                        <br>-->
-
-
-<!--                                                        <label class="col-form-label"-->
-<!--                                                               for="emailDelete"><strong>Email</strong></label>-->
-<!--                                                        <input class="form-control" id="emailDelete"-->
-<!--                                                               name="email"-->
-<!--                                                               th:value="${currentUser.email}"-->
-<!--                                                               type="text" disabled>-->
-<!--                                                        <br>-->
-
-<!--                                                        <label class="col-form-label"-->
-<!--                                                               for="loginDelete"><strong>Login</strong></label>-->
-<!--                                                        <input class="form-control" id="loginDelete"-->
-<!--                                                               name="login"-->
-<!--                                                               th:value="${currentUser.login}"-->
-<!--                                                               type="text" disabled>-->
-<!--                                                        <br>-->
-
-<!--                                                        <label class="col-form-label"-->
-<!--                                                               for="passwordDelete"><strong>Password</strong></label>-->
-<!--                                                        <input class="form-control" id="passwordDelete"-->
-<!--                                                               name="password"-->
-<!--                                                               th:value="${currentUser.password}"-->
-<!--                                                               type="text" disabled>-->
-<!--                                                        <br>-->
-<!--                                                        <fieldset class="form-group">-->
-<!--                                                            <label><strong>Role</strong></label>-->
-<!--                                                            <select class="custom-select h-50" size="2"-->
-<!--                                                                    name="role"-->
-<!--                                                                    th:value="${currentUser.roles}" disabled>-->
-<!--                                                                <option value="USER">USER-->
-<!--                                                                </option>-->
-<!--                                                                <option value="ADMIN">ADMIN-->
-<!--                                                                </option>-->
-<!--                                                            </select>-->
-<!--                                                        </fieldset>-->
-<!--                                                        <br>-->
-<!--                                                    </div>-->
-<!--                                                    <input path="id" name="id"-->
-<!--                                                           type="hidden" placeholder="id"-->
-<!--                                                           class="form-control"-->
-<!--                                                           th:value="${currentUser.id}" readonly/>-->
-<!--                                                </div>-->
-<!--                                                <div class="modal-footer">-->
-<!--                                                    <button type="button" class="btn btn-secondary btn-sm"-->
-<!--                                                            data-dismiss="modal">Close-->
-<!--                                                    </button>-->
-<!--                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </form>-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                        </tr>-->
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<!--<script type="text/javascript">-->
+<!--    async function getUsers() {-->
+<!--        let users = [];-->
+<!--        let user = fetch('/users').then(-->
+<!--            successResponse => {-->
+<!--                if (successResponse.status !== 200) {-->
+<!--                    return null;-->
+<!--                } else {-->
+<!--                    return successResponse.json();-->
+<!--                }-->
+<!--            },-->
+<!--            failResponse => {-->
+<!--                return null;-->
+<!--            }-->
+<!--        );-->
+<!--        users.push(user);-->
+<!--        let results = await Promise.all(users);-->
+
+<!--        document.getElementById('tbody').innerHTML = "<tr>" +-->
+<!--            "<td>" + results[0][0]['id'] + "</td>"-->
+<!--        "<td>" + results[0][0]['name'] + "</td>"-->
+<!--        "<td>" + results[0][0]['last_name'] + "</td>"-->
+<!--        "<td>" + results[0][0]['email'] + "</td>"-->
+<!--        "<td>" + results[0][0]['login'] + "</td>"-->
+<!--        "<td>" + results[0][0]['password'] + "</td>"-->
+<!--        "<td>" + results[0][0]['role'] + "</td>" + "</tr>"-->
+
+<!--        return results;-->
+<!--    }-->
+<!--</script>-->
+
+<!--<div>-->
+<!--    <script src="../static/js/test2.js"></script>-->
+<!--</div>-->
+<!--<div>-->
+<!--    <script src="../static/js/test3.js"></script>-->
+<!--</div>-->
 
 
 <!--<SCRIPT>-->
@@ -377,47 +170,554 @@
 <!--    // })-->
 
 <!--</SCRIPT>-->
-<div>
-    <label class="col-form-label"
-           for="thingOne"><strong>Thing One</strong></label>
-    <input class="form-control" id="thingOne"
-           name="thing_one"
-           value="thing One"
-           disabled
-           type="text">
-    <br>
-    <label class="col-form-label"
-           for="thingTwo"><strong>Thing Two</strong></label>
-    <input class="form-control" id="thingTwo"
-           name="thing_two"
-           value="thing Two"
-           disabled
-           type="text">
-    <br>
-</div>
 
-<SCRIPT>
+
+<!--<div>-->
+<!--    <label class="col-form-label"-->
+<!--           for="thingOne"><strong>Thing One</strong></label>-->
+<!--    <input class="form-control" id="thingOne"-->
+<!--           name="thing_one"-->
+<!--           value="thing One"-->
+<!--           disabled-->
+<!--           type="text">-->
+<!--    <br>-->
+<!--    <form>-->
+<!--        <input type="button" value="Show date & time"-->
+<!--               onclick="showTime()">-->
+<!--    </form>-->
+
+<!--</div>-->
+
+<!--<script type="text/javascript">-->
+<!--    let d = new Date();-->
+<!--    var showTime = function() {-->
+<!--        document.getElementById('content').innerHTML = "<h1>Today’s date is " + d + "</h1>";-->
+<!--    }-->
+
+<!--    //     $(document).ready(function () {-->
+<!--    //     showTime();-->
+<!--    //     setInterval('showTime()', 1000);-->
+<!--    // });-->
+
+<!--</script>-->
+
+
+<!-- *************************************************************************-->
+<!-- *****************        тестовый скрипт                         ********-->
+<!--**************************************************************************-->
+
+<!--<script type="text/javascript">-->
+<!--    var prefix = '/users';-->
+
+<!--    var RestGet = function() {-->
+<!--        $.ajax({-->
+<!--            type: 'GET',-->
+<!--            url:'/api/users',-->
+<!--            // url:  prefix + '/' + Date.now(),-->
+<!--            dataType: 'json',-->
+<!--            async: true,-->
+<!--            success: function(result) {-->
+<!--                alert('Время: ' + result.time-->
+<!--                    + ', сообщение: ' + result.message);-->
+<!--            },-->
+<!--            error: function(jqXHR, textStatus, errorThrown) {-->
+<!--                alert(jqXHR.status + ' ' + jqXHR.responseText);-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+<!--    var RestPut = function() {-->
+<!--        var JSONObject= {-->
+<!--            'time': Date.now(),-->
+<!--            'message': 'Это пример вызова PUT метода'-->
+<!--        };-->
+
+<!--        $.ajax({-->
+<!--            type: 'PUT',-->
+<!--            url:  prefix,-->
+<!--            contentType: 'application/json; charset=utf-8',-->
+<!--            data: JSON.stringify(JSONObject),-->
+<!--            dataType: 'json',-->
+<!--            async: true,-->
+<!--            success: function(result) {-->
+<!--                alert('Время: ' + result.time-->
+<!--                    + ', сообщение: ' + result.message);-->
+<!--            },-->
+<!--            error: function(jqXHR, textStatus, errorThrown) {-->
+<!--                alert(jqXHR.status + ' ' + jqXHR.responseText);-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+<!--    var RestPost = function() {-->
+<!--        $.ajax({-->
+<!--            type: 'POST',-->
+<!--            url:  prefix,-->
+<!--            dataType: 'json',-->
+<!--            async: true,-->
+<!--            success: function(result) {-->
+<!--                alert('Время: ' + result.time-->
+<!--                    + ', сообщение: ' + result.message);-->
+<!--            },-->
+<!--            error: function(jqXHR, textStatus, errorThrown) {-->
+<!--                alert(jqXHR.status + ' ' + jqXHR.responseText);-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+<!--    var RestDelete = function() {-->
+<!--        $.ajax({-->
+<!--            type: 'DELETE',-->
+<!--            url:  prefix + '/' + Date.now(),-->
+<!--            dataType: 'json',-->
+<!--            async: true,-->
+<!--            success: function(result) {-->
+<!--                alert('Время: ' + result.time-->
+<!--                    + ', сообщение: ' + result.message);-->
+<!--            },-->
+<!--            error: function(jqXHR, textStatus, errorThrown) {-->
+<!--                alert(jqXHR.status + ' ' + jqXHR.responseText);-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+<!--</script>-->
+
+
+
+<!--<h3>Это простой пример использования REST c помощью Ajax</h3>-->
+
+<!--<button type="button" onclick="RestGet()">Метод GET</button>-->
+<!--<button type="button" onclick="RestPost()">Метод POST</button>-->
+<!--<button type="button" onclick="RestDelete()">Метод DELETE</button>-->
+<!--<button type="button" onclick="RestPut()">Метод PUT</button>-->
+<!--<button type="button" onclick="showTime()">Show Time</button>-->
+
+<!--<div id="content">-->
+<!--    <h1>Test content is</h1>;-->
+<!--</div>-->
+
+
+
+<!-- *************************************************************************-->
+<!-- *****************         скрипт для отображения табалицы         ********-->
+<!--**************************************************************************-->
+
+<script>
+    let modal = $('#defaultModal');
+    let modalTitle = $('.modal-title');
+    let modalBody = $('.modal-body');
+    let modalFooter = $('.modal-footer');
+
+    let clearFormButton = $('<button type="reset" class="btn btn-secondary">Clear</button>');
+    let primaryButton = $('<button type="button" class="btn btn-primary">Btn1</button>');
+    let dismissButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Btn2</button>');
+    let dangerButton = $('<button type="button" class="btn btn-danger">Btn3</button>');
+
     $(document).ready(function () {
+        viewAllUsers();
+        defaultModal();
         console.log("Captain’s Log");
     });
-</SCRIPT>
-<SCRIPT>
-    document.writeln("Writeln");
-</SCRIPT>
-<SCRIPT>
-    $(document).ready(function () {
-        document.writeln("Document.Writeln");
-    });
-</SCRIPT>
 
-<script type="text/javascript">
-    document.getElementById('thingTwo').innerHTML = "Thing Three"
+
+    function defaultModal() {
+        modal.modal({
+            keyboard: true,
+            backdrop: "static",
+            show: false,
+        }).on("show.bs.modal", function (event) {
+            let button = $(event.relatedTarget);
+            let id = button.data('id');
+            let action = button.data('action');
+            switch (action) {
+                case 'viewUser':
+                    viewUser($(this), id);
+                    break;
+
+                case 'addUser':
+                    addUser($(this));
+                    break;
+
+                case 'editUser':
+                    editUser($(this), id);
+                    break;
+
+                case 'deleteUser':
+                    deleteUser($(this), id);
+                    break;
+            }
+        }).on('hidden.bs.modal', function (event) {
+            $(this).find('.modal-title').html('');
+            $(this).find('.modal-body').html('');
+            $(this).find('.modal-footer').html('');
+        });
+    }
+
+    async function viewAllUsers() {
+        $('#userTable tbody').empty();
+        const usersResponse = await userService.findAll();
+        const usersJson = usersResponse.json();
+        usersJson.then(users => {
+            users.forEach(user => {
+                let userRow = `$(<tr>
+                        <th scope="row">${user.id}</th>
+                        <td>${user.name}</td>
+                        <td>${user.last_name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.login}</td>
+                        <td>${user.password}</td>
+                        <td>${user.roles}</td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group" aria-label="Action Buttons">
+                                <button class="btn btn-primary" data-id="${user.id}" data-action="editUser" data-toggle="modal" data-target="#defaultModal">Edit></button>
+                                <button class="btn btn-danger" data-id="${user.id}" data-action="deleteUser" data-toggle="modal" data-target="#defaultModal">Delete</i></button>
+                            </div>
+                        </td>
+                    </tr>)`;
+                $('#userTable tbody').append(userRow);
+            });
+        });
+    }
+
+    async function viewUser(modal, id) {
+        const userResponse = await userService.findById(id);
+        const userJson = userResponse.json();
+
+        modal.find(modalTitle).html('View User');
+        let viewUserTableHidden = $('.viewUserTable:hidden')[0];
+        modal.find(modalBody).html($(viewUserTableHidden).clone());
+        let viewUserTable = modal.find('.viewUserTable');
+        modal.find(viewUserTable).show();
+        dismissButton.html('Close');
+        modal.find(modalFooter).append(dismissButton);
+
+        userJson.then(user => {
+            modal.find('#id').html(user.id);
+            modal.find('#name').html(user.name);
+            modal.find('#lastname').html(user.last_name);
+            modal.find('#email').html(user.email);
+            modal.find('#login').html(user.login);
+            modal.find('#password').html(user.password);
+        });
+    }
+
+    async function addUser(modal) {
+        const rolesResponse = await userService.findAll();
+        const rolesJson = rolesResponse.json();
+
+        modal.find(modalTitle).html('Add User');
+        let userFormHidden = $('.userForm:hidden')[0];
+        modal.find(modalBody).html($(userFormHidden).clone());
+        let userForm = modal.find('.userForm');
+        userForm.prop('id', 'addUserForm');
+        modal.find(userForm).show();
+        dismissButton.html('Cancel');
+        modal.find(modalFooter).append(dismissButton);
+        primaryButton.prop('id', 'saveUserButton');
+        primaryButton.html('Save');
+        modal.find(modalFooter).append(primaryButton);
+        rolesJson.then(roles => {
+            roles.forEach(role => {
+                modal.find('#role').append(new Option(role.name, role.id));
+            });
+        });
+
+        $('#saveUserButton').click(async function (e) {
+            let name = userForm.find('#name').val().trim();
+            let last_name = userForm.find('#last_name').val().trim();
+            let email = userForm.find('#email').val().trim();
+            let login = userForm.find('#logn').val().trim();
+            let password = userForm.find('#password').val().trim();
+            let roleId = userForm.find('#role option:selected').val().trim();
+            let data = {
+                name: name,
+                last_name: last_name,
+                email: email,
+                login: login,
+                password: password,
+                role: {
+                    id: roleId
+                }
+            };
+
+            const userResponse = await userService.add(data);
+
+            if (userResponse.status === 201) {
+                viewAllUsers();
+                modal.find('.modal-title').html('Success');
+                modal.find('.modal-body').html('User added!');
+                dismissButton.html('Close');
+                modal.find(modalFooter).html(dismissButton);
+                $('#defaultModal').modal('show');
+            } else if (userResponse.status === 400) {
+                userResponse.json().then(response => {
+                    response.validationErrors.forEach(function (error) {
+                        modal.find('#' + error.field).addClass('is-invalid');
+                        modal.find('#' + error.field).next('.invalid-feedback').text(error.message);
+                    });
+                });
+            } else {
+                userResponse.json().then(response => {
+                    let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert">
+                        ${response.error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>`;
+                    modal.find('.modal-body').prepend(alert);
+                });
+            }
+        });
+    }
+
+    async function editUser(modal, id) {
+        const userResponse = await userService.findById(id);
+        const userJson = userResponse.json();
+        const categoriesResponse = await categoryService.findAll();
+        const categoriesJson = categoriesResponse.json();
+
+        let idInput = `<div class="form-group">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id" disabled>
+            <div class="invalid-feedback"></div>
+        </div>`;
+
+        modal.find(modalTitle).html('Edit User');
+        let userFormHidden = $('.userForm:hidden')[0];
+        modal.find(modalBody).html($(userFormHidden).clone());
+        let userForm = modal.find('.userForm');
+        userForm.prop('id', 'updateUserForm');
+        modal.find(userForm).prepend(idInput);
+        modal.find(userForm).show();
+        dismissButton.html('Cancel');
+        modal.find(modalFooter).append(dismissButton);
+        primaryButton.prop('id', 'updateUserButton');
+        primaryButton.html('Update');
+        modal.find(modalFooter).append(primaryButton);
+
+        userJson.then(user => {
+            modal.find('#id').val(user.id);
+            modal.find('#name').val(user.name);
+            modal.find('#last_name').val(user.last_name);
+            modal.find('#email').val(user.email);
+            modal.find('#login').val(user.login);
+            modal.find('#password').val(user.password);
+            categoriesJson.then(roles => {
+                roles.forEach(role => {
+                    if (user.role.id === role.id)
+                        modal.find('#role').append(new Option(role.name, role.id, false, true));
+                    else
+                        modal.find('#role').append(new Option(role.name, role.id));
+                });
+            });
+        });
+
+
+        $('#updateUserButton').click(async function (e) {
+            let id = userForm.find('#id').val().trim();
+            let name = userForm.find('#name').val().trim();
+            let last_name = userForm.find('#last_name').val().trim();
+            let email = userForm.find('#email').val().trim();
+            let login = userForm.find('#login').val().trim();
+            let password = userForm.find('#password').val().trim();
+            let roleId = userForm.find('#role option:selected').val().trim();
+            let data = {
+                id: id,
+                name: name,
+                last_name: last_name,
+                email: email,
+                login: login,
+                password: password,
+                role: {
+                    id: roleId
+                }
+            };
+
+            const userResponse = await userService.update(id, data);
+
+            if (userResponse.status === 200) {
+                viewAllUsers();
+                modal.find('.modal-title').html('Success');
+                modal.find('.modal-body').html('User updated!');
+                dismissButton.html('Close');
+                modal.find(modalFooter).html(dismissButton);
+                $('#defaultModal').modal('show');
+            } else if (userResponse.status === 400) {
+                userResponse.json().then(response => {
+                    response.validationErrors.forEach(function (error) {
+                        modal.find('#' + error.field).addClass('is-invalid');
+                        modal.find('#' + error.field).next('.invalid-feedback').text(error.message);
+                    });
+                });
+            } else {
+                userResponse.json().then(response => {
+                    let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert">
+                        ${response.error}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>`;
+                    modal.find('.modal-body').prepend(alert);
+                });
+            }
+        });
+    }
+
+    async function deleteUser(modal, id) {
+        const userResponse = await userService.findById(id);
+        const userJson = userResponse.json();
+
+        modal.find(modalTitle).html('Delete User');
+        let message = '<strong>Are you sure to delete the following user?</strong>';
+        modal.find(modalBody).html(message);
+        let viewUserTableHidden = $('.viewUserTable:hidden')[0];
+        modal.find(modalBody).append($(viewUserTableHidden).clone());
+        let viewUserTable = modal.find('.viewUserTable');
+        modal.find(viewUserTable).show();
+        dismissButton.html('Close');
+        modal.find(modalFooter).append(dismissButton);
+        dangerButton.prop('id', 'deleteUserButton');
+        dangerButton.html('Delete');
+        modal.find(modalFooter).append(dangerButton);
+
+        userJson.then(user => {
+            modal.find('#id').html(user.id);
+            modal.find('#name').html(user.name);
+            modal.find('#last_name').html(user.last_name);
+            modal.find('#email').html(user.email);
+            modal.find('#login').html(user.login);
+            modal.find('#password').html(user.password);
+            categoriesJson.then(roles => {
+                roles.forEach(role => {
+                    if (user.role.id == role.id)
+                        modal.find('#role').append(new Option(role.name, role.id, false, true));
+                    else
+                        modal.find('#role').append(new Option(role.name, role.id));
+                });
+            });
+        });
+
+        $('#deleteUserButton').click(async function (e) {
+            const userResponse = await userService.delete(id);
+
+            if (userResponse.status === 204) {
+                viewAllUsers();
+                modal.find('.modal-title').html('Success');
+                modal.find('.modal-body').html('User deleted!');
+                dismissButton.html('Close');
+                modal.find(modalFooter).html(dismissButton);
+                $('#defaultModal').modal('show');
+            } else {
+                userResponse.json().then(response => {
+                    let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert">
+                            ${response.error}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>`;
+                    modal.find('.modal-body').prepend(alert);
+                });
+            }
+        });
+    }
+
+
+    const http = {
+        fetch: async function (url, options = {}) {
+            return await fetch(url, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                ...options,
+            });
+        }
+    };
+
+    const userService = {
+        findAll: async () => {
+            return await http.fetch('/api/users');
+        },
+        add: async (data) => {
+            return await http.fetch('/api/users', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+        },
+        findById: async (id) => {
+            return await http.fetch('/api/users/' + id);
+        },
+        update: async (id, data) => {
+            return await http.fetch('/api/users/' + id, {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            });
+        },
+        delete: async (id) => {
+            return await http.fetch('/api/users/' + id, {
+                method: 'DELETE'
+            });
+        },
+    };
+
 </script>
 
-<script src="webjars/jquery/3.3.1/jquery.min.js"></script>
-<script src="/static/js/test2.js"></script>
+<!--**************************************************************************-->
+<!--******           тестовые скрипты                *************************-->
+<!--**************************************************************************-->
 
-<!--<script src="/static/main.js" type="text/javascript" async></script>-->
+<!--<script src="webjars/jquery/3.3.1/jquery.min.js"></script>-->
+
+<!--<SCRIPT>-->
+<!--    $(document).ready(function () {-->
+<!--        console.log("Captain’s Log"); //работает-->
+<!--    });-->
+<!--</SCRIPT>-->
+<!--<br>-->
+<!--<SCRIPT>-->
+<!--    document.writeln("document.writeln");  //работает-->
+<!--</SCRIPT>-->
+<!--<br>-->
+<!--<SCRIPT>-->
+<!--    $(document).ready(function () {-->
+<!--        document.writeln("document.ready.writeln"); //работает-->
+<!--    });-->
+<!--</SCRIPT>-->
+<!--<br>-->
+
+<!--<div id="content"></div>-->
+
+<!--<script>-->
+<!--    function show() {-->
+<!--        $.ajax({-->
+<!--            url: "/api/users",-->
+<!--            cache: false,-->
+<!--            success: function(html){-->
+<!--                $("#content").html(html);-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+<!--//     $(document).ready(function(){-->
+<!--//         show();-->
+<!--// //        setInterval('show()',1000);-->
+<!--//     });-->
+<!--</script>-->
+
+
+<!--<script>-->
+<!--    $('#thingOne').empty().append("<h1>Today’s date is " + d + "</h1>");-->
+<!--</script>-->
+
+
+<!--<script type="text/javascript">-->
+<!--    document.getElementById('thingTwo').innerHTML = "Thing Three" //не работает-->
+<!--</script>-->
+
+
+<!--<script src="../static/js/test2.js">test2_js</script>-->
+
+<!--<script src="/static/js/test3.js" type="text/javascript" async></script>-->
 
 <!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"-->
 <!--        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"-->
@@ -428,6 +728,126 @@
 <!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"-->
 <!--        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"-->
 <!--        crossorigin="anonymous"></script>-->
+
+<!--<script>-->
+<!--    const nameValue = document.getElementById('name');-->
+<!--    const lastnameValue = document.getElementById('last_name');-->
+<!--    const emailValue = document.getElementById('email');-->
+<!--    const loginValue = document.getElementById('login');-->
+<!--    const passwordValue = document.getElementById('password');-->
+<!--    const rolesValue = document.getElementById('roles');-->
+<!--    const postsList = document.getElementById('output');fetch('/api/users')-->
+<!--        .then(res => res.json())-->
+<!--        .then(data => renderPosts(data))//Вывод на страницу-->
+<!--    let output = '';    const renderPosts = (posts) => {-->
+<!--        posts.forEach(post => {-->
+<!--            output += `-->
+<!--    <tr>-->
+<!--      <th id="id${post.id}" scope="row">${post.id}</th>-->
+<!--      <td id="name${post.id}">${post.name}</td>-->
+<!--      <td id="name${post.id}">${post.last_name}</td>-->
+<!--      <td id="name${post.id}">${post.email}</td>-->
+<!--      <td id="name${post.id}">${post.login}</td>-->
+<!--      <td id="age${post.id}">${post.password}</td>-->
+<!--      <td id="password${post.id}">${post.roles}</td>-->
+<!--      <td><button onclick="openEditModal(${post.id})" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Edit</button></td>-->
+<!--      <td><button onclick="openDeleteModal(${post.id})" class="btn btn-danger" data-toggle="modal" data-target="#deleteExampleModal">Delete</button></td>-->
+<!--    </tr>-->
+<!--`;-->
+<!--        });-->
+<!--        postsList.innerHTML = output;-->
+<!--    }//открывает модалку удаления-->
+<!--    function openDeleteModal(id) {-->
+<!--        console.log(id);-->
+<!--        let name = document.getElementById('name'+id).textContent;-->
+<!--        let last_name = document.getElementById('last_name'+id).textContent;-->
+<!--        let email = document.getElementById('email'+id).textContent;-->
+<!--        let login = document.getElementById('login'+id).textContent;-->
+<!--        let password = document.getElementById('password'+id).textContent;-->
+<!--        let roles = document.getElementById('roles'+id).textContent;-->
+<!--        $('#idDelete').val(id);-->
+<!--        $('#nameDelete').val(name);-->
+<!--        $('#lastNameDelete').val(lastname);-->
+<!--        $('#emailDelete').val(email);-->
+<!--        $('#loginDelete').val(login);-->
+<!--        $('#passwordDelete').val(password);-->
+<!--        $('#rolesDelete').val(roles);-->
+<!--        //кнопка для удаления внутри модалки-->
+<!--        $('.buttonDelete').on('click', function (event) {-->
+<!--            event.preventDefault();-->
+<!--            fetch('/api/users/'+id, {-->
+<!--                method: 'DELETE',-->
+<!--            })-->
+<!--                .then(res => res.text())-->
+<!--                .then(() => location.reload())-->
+<!--        })}//открывает модалку редактирования-->
+<!--    function openEditModal(id) {-->
+<!--        let name = document.getElementById('name'+id).textContent;-->
+<!--        let last_name = document.getElementById('last_name'+id).textContent;-->
+<!--        let email = document.getElementById('email'+id).textContent;-->
+<!--        let login = document.getElementById('login'+id).textContent;-->
+<!--        let password = document.getElementById('password'+id).textContent;-->
+<!--        let roles = document.getElementById('roles'+id).textContent;-->
+<!--        $('#idEdit').val(id);-->
+<!--        $('#nameEdit').val(name);-->
+<!--        $('#lastnameEdit').val(last_name);-->
+<!--        $('#emailEdit').val(email);-->
+<!--        $('#loginEdit').val(login);-->
+<!--        $('#passwordEdit').val(password);-->
+<!--        $('#rolesEdit').val(roles);-->
+<!--    }//кнопка в модалке для редактирования-->
+<!--    $('.buttonEdit').on('click', function (event) {-->
+<!--        event.preventDefault();-->
+<!--        let users = {-->
+<!--            id: $('#idEdit').val(),-->
+<!--            name: $('#nameEdit').val(),-->
+<!--            last_name: $('#lastNameEdit').val(),-->
+<!--            login: $('#loginEdit').val(),-->
+<!--            password: $('#passwordEdit').val(),-->
+<!--            roles: $('#rolesEdit').val()-->
+<!--        };-->
+<!--        fetch('/api/users/update', {-->
+<!--            method:'PUT',-->
+<!--            headers: {-->
+<!--                'Accept': 'application/json, text/plain, */*',-->
+<!--                'Content-type':'application/json'-->
+<!--            },-->
+<!--            body:JSON.stringify(users)-->
+<!--        }).then(res => res.text())-->
+<!--            .then(() => location.reload())-->
+<!--    });-->
+
+<!--    $(document).ready(function() {      //Post - добавление данных-->
+<!--        document.getElementById('addData').addEventListener('submit', addData);//post-->
+<!--        function addData(e){-->
+<!--            // e.preventDefault();        console.log(rolesValue.value);        fetch('/api/users/add', {-->
+<!--            e.preventDefault();        console.log(rolesValue.value);        fetch('/api/users/', {-->
+<!--                method:'POST',-->
+<!--                headers: {-->
+<!--                    'Accept': 'application/json, text/plain, */*',-->
+<!--                    'Content-type':'application/json'-->
+<!--                },-->
+<!--                body:JSON.stringify({-->
+<!--                    name:nameValue.value,-->
+<!--                    last_name:lastnameValue.value,-->
+<!--                    email:emailValue.value,-->
+<!--                    login:loginValue.value,-->
+<!--                    password:passwordValue.value,-->
+<!--                    role_id:rolesValue.value-->
+<!--                })-->
+<!--            })-->
+<!--                .then(res => res.json())-->
+<!--                .then(data => {-->
+<!--                    const dataArr = [];-->
+<!--                    dataArr.push(data);-->
+<!--                    renderPosts(dataArr);-->
+<!--                })-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
+
+
+<!--<script src="../static/js/main.js"></script>-->
 
 </body>
 </html>

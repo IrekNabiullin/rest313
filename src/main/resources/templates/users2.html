@@ -1,7 +1,8 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en" >
+<html lang="en" >
     <head>
         <th:block th:include="fragments/header :: head"></th:block>
+        <title></title>
     </head>
     <body>
         <header th:replace="fragments/header :: header"></header>
@@ -17,7 +18,9 @@
                                 <th class="bg-dark">Email</th>
                                 <th class="bg-dark">Login</th>
                                 <th class="bg-dark">Password</th>
-                                <th class="bg-dark">Action</th>
+                                <th class="bg-dark">Role</th>
+                                <th class="bg-dark">Edit</th>
+                                <th class="bg-dark">Delete</th>
                             </tr>
                         </thead>
                         <tbody>

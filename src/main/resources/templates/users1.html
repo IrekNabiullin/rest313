@@ -16,13 +16,12 @@
         <div th:object="${user}">
             <a class="navbar-text text-white font-weight-bold" th:text="${user.getEmail()}"> </a>
             <a class="navbar-text text-white"
-               th:text=" ' with roles : ' "></a>
+               th:text=" ' with roles : ' ">with roles</a>
             <a>
                 <th:block th:each="role : ${user.getRoles()}">
                     <a class="navbar-text text-white font-weight-bold" th:text="${role.getRole()} ">,</a>
                 </th:block>
             </a>
-
         </div>
         <ul class="navbar-nav px-3">
             <li class="nav-item text-nowrap">
@@ -197,8 +196,8 @@
                                 <!-- Delete Modal -->
                                 <div class="modal fade" th:id="${'deleteuser'+currentUser.id}" tabindex="-1"
                                      role="dialog" aria-labelledby="myDeleteModalLabel" aria-hidden="true">
-                                    <form th:action="@{/users/delete(id=${currentUser.id})}" method="get">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <form th:action="@{/users1/delete(id=${currentUser.id})}" method="get">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="myDeleteModalLabel">Delete user</h5>
