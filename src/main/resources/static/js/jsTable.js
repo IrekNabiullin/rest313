@@ -10,9 +10,9 @@ jQuery(function ($) {
             createObject["id"] = 1;
             createObject["username"] = $("#usernameInput").val();
             createObject["lastName"] = $("#lastNameInput").val();
+            createObject["email"] = $("#emailInput").val();
+            createObject["login"] = $("#loginInput").val();
             createObject["password"] = $("#passwordInput").val();
-            createObject["weight"] = $("#weightInput").val();
-            createObject["height"] = $("#heightInput").val();
             var select = document.getElementById("rolesInput");
             var value = select.value;
             if (value.includes("ADMIN")) {
@@ -23,7 +23,7 @@ jQuery(function ($) {
             // createObject["roles"] = value;
 
             let jsonData = JSON.stringify(createObject);
-            fetch('http://localhost:8080/rest/users', {
+            fetch('http://localhost:8080/rest/users/add', {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -48,10 +48,10 @@ jQuery(function ($) {
         let id = this.id.slice(this.id.lastIndexOf('-') + 1);
         $('#id-input').attr('value', id);
         document.getElementById("username-edit").value = $('#userUsername-' + id).text();
-        document.getElementById("password-edit").value = "";
         document.getElementById("lastname-edit").value = $('#userLastName-' + id).text();
-        document.getElementById("userheight-edit").value = $('#userWeight-' + id).text();
-        document.getElementById("userweight-edit").value = $('#userHeight-' + id).text();
+        document.getElementById("useremail-edit").value = $('#userEmail-' + id).text();
+        document.getElementById("userlogin-edit").value = $('#userLogin-' + id).text();
+        document.getElementById("password-edit").value = "";
         let userRow = $("[id=" + id + "]");
         let rolesList = ["ADMIN", "USER"];
         let userRoles = userRow.find('#userRoles-' + id).text();
@@ -76,7 +76,7 @@ jQuery(function ($) {
 
     $('#delete-user').on('click', function () {
         let id = $('#id-input-hidden-delete').val();
-        fetch('http://localhost:8080/rest/delete/' + id, {
+        fetch('http://localhost:8080/rest/users/delete/' + id, {
             method: 'post',
             dataType: 'json'
         })
@@ -92,9 +92,10 @@ jQuery(function ($) {
         updateObject["id"] = $("#id-input").val();
         updateObject["username"] = $("#username-edit").val();
         updateObject["lastName"] = $("#lastname-edit").val();
+        updateObject["email"] = $("#useremail-edit").val();
+        updateObject["login"] = $("#userlogin-edit").val();
         updateObject["password"] = $("#password-edit").val();
-        updateObject["weight"] = $("#userweight-edit").val();
-        updateObject["height"] = $("#userheight-edit").val();
+
         let rol = $("#role-edit").val();
         if (rol.includes("ADMIN")) {
             updateObject["roles"] = [{"id": 1}]
@@ -103,7 +104,7 @@ jQuery(function ($) {
         }
 
         let jsonData = JSON.stringify(updateObject);
-        fetch('http://localhost:8080/rest/editUser', {
+        fetch('http://localhost:8080/api/users/edit', {
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -117,9 +118,9 @@ jQuery(function ($) {
                         <td id="userId-${newData.id}">${newData.id}</td>
                         <td id="userUsername-${newData.id}">${newData.username}</td>
                         <td id="userLastName-${newData.id}">${newData.lastName}</td>
-                        <td id="userWeight-${newData.id}">${newData.weight}</td>
-                        <td id="userHeight-${newData.id}">${newData.height}</td>
-                        <td id="userRoles-${newData.id}">${newData.stringRole}</td>
+                        <td id="userEmail-${newData.id}">${newData.email}</td>
+                        <td id="userLogin-${newData.id}">${newData.login}</td>
+                        <td id="userPassword-${newData.id}">${newData.password}</td>
                         <td> <button type="button" class="btn btn-info edit-user" data-toggle="modal" data-target="#modal-edit" id="editButton-${newData.id}">Edit</button></td>
                         <td><button type="button" class="btn btn-danger delete-row" data-toggle="modal" data-target="#modal-delete" id="deleteButton-${newData.id}">Delete</button></td>
             </tr>\`;
@@ -138,7 +139,7 @@ jQuery(function ($) {
 
 
 function createTable() {
-    fetch("http://localhost:8080/rest/users")
+    fetch("http://localhost:8080/api/users")
         .then(response => {
             response.json().then(data => {
                 if (data.length > 0) {
@@ -156,9 +157,10 @@ function addTableRow(user) {
                         <td id="userId-${user.id}">${user.id}</td>
                         <td id="userUsername-${user.id}">${user.username}</td>
                         <td id="userLastName-${user.id}">${user.lastName}</td>
-                        <td id="userWeight-${user.id}">${user.weight}</td>
-                        <td id="userHeight-${user.id}">${user.height}</td>
-                        <td id="userRoles-${user.id}">${user.stringRole}</td>
+                        <td id="userEmail-${user.id}">${user.email}</td>
+                        <td id="userLogin-${user.id}">${user.login}</td>
+                        <td id="userPassword-${user.id}">${user.password
+    }</td>
                         <td> <button type="button" class="btn btn-info edit-user" data-toggle="modal" data-target="#modal-edit" id="editButton-${user.id}">Edit</button></td>
                         <td><button type="button" class="btn btn-danger delete-row" data-toggle="modal" data-target="#modal-delete" id="deleteButton-${user.id}">Delete</button></td>
             </tr>`;

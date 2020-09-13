@@ -76,5 +76,185 @@
         </div>
     </div>
 </div>
+
+<!-- *************************************************************************-->
+<!-- *****************        модалка в нужном формате                ********-->
+<!--**************************************************************************-->
+<!--<SCRIPT>-->
+<!--    $(document).ready(function () {-->
+
+<!--        $('a[data-toggle=modal], button[data-toggle=modal]').click(function () {-->
+
+<!--            var data_id = '';-->
+
+<!--            if (typeof $(this).data('id') !== 'undefined') {-->
+
+<!--                data_id = $(this).data('id');-->
+<!--            }-->
+
+<!--            $('#my_element_id').val(data_id);-->
+
+<!--            var data_firstname = '';-->
+
+<!--            if (typeof $(this).data('firstname') !== 'undefined') {-->
+
+<!--                data_firstname = $(this).data('firstname');-->
+<!--            }-->
+
+<!--            $('#my_element_firstname').val(data_firstname);-->
+
+<!--            const firstNameEdit = #my_element_firstname;-->
+<!--        })-->
+<!--    });-->
+
+<!--    //-->
+<!--    // $('#myModal').on('show.bs.modal', function (event) {-->
+<!--    //     const button = $(event.relatedTarget);-->
+<!--    //     const firstNameEdit = button.data('firstname');-->
+<!--    //     const lastNameEdit = button.data('lastname');-->
+<!--    //     const emailEdit = button.data('email');-->
+<!--    //     const loginEdit = button.data('login');-->
+<!--    //     const passwordEdit = button.data('password');-->
+<!--    //     const roleEdit = button.data('roles');-->
+<!--    //     const modal = $(this);-->
+<!--    //-->
+<!--    //     modal.find('#firstNameEdit').val(firstNameEdit);-->
+<!--    //     modal.find('#lastNameEdit').val(lastNameEdit);-->
+<!--    //     modal.find('#loginEdit').val(loginEdit);-->
+<!--    //     modal.find('#passwordEdit').val(passwordEdit);-->
+<!--    //     modal.find('#emailEdit').val(emailEdit);-->
+<!--    //     modal.find('#roleEdit').val(roleEdit);-->
+<!--    // })-->
+
+<!--</SCRIPT>-->
+
+
+
+<!--<div>-->
+<!--    <label class="col-form-label"-->
+<!--           for="thingOne"><strong>Thing One</strong></label>-->
+<!--    <input class="form-control" id="thingOne"-->
+<!--           name="thing_one"-->
+<!--           value="thing One"-->
+<!--           disabled-->
+<!--           type="text">-->
+<!--    <br>-->
+<!--    <form>-->
+<!--        <input type="button" value="Show date & time"-->
+<!--               onclick="showTime()">-->
+<!--    </form>-->
+
+<!--</div>-->
+
+<!--<script type="text/javascript">-->
+<!--    let d = new Date();-->
+<!--    var showTime = function() {-->
+<!--        document.getElementById('content').innerHTML = "<h1>Today’s date is " + d + "</h1>";-->
+<!--    }-->
+
+<!--    //     $(document).ready(function () {-->
+<!--    //     showTime();-->
+<!--    //     setInterval('showTime()', 1000);-->
+<!--    // });-->
+
+<!--</script>-->
+
+
+<!-- *************************************************************************-->
+<!-- *****************        тестовый скрипт                         ********-->
+<!--**************************************************************************-->
+
+<!--<script type="text/javascript">-->
+<!--    var prefix = '/users';-->
+
+<!--    var RestGet = function() {-->
+<!--        $.ajax({-->
+<!--            type: 'GET',-->
+<!--            url:'/api/users',-->
+<!--            // url:  prefix + '/' + Date.now(),-->
+<!--            dataType: 'json',-->
+<!--            async: true,-->
+<!--            success: function(result) {-->
+<!--                alert('Время: ' + result.time-->
+<!--                    + ', сообщение: ' + result.message);-->
+<!--            },-->
+<!--            error: function(jqXHR, textStatus, errorThrown) {-->
+<!--                alert(jqXHR.status + ' ' + jqXHR.responseText);-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+<!--    var RestPut = function() {-->
+<!--        var JSONObject= {-->
+<!--            'time': Date.now(),-->
+<!--            'message': 'Это пример вызова PUT метода'-->
+<!--        };-->
+
+<!--        $.ajax({-->
+<!--            type: 'PUT',-->
+<!--            url:  prefix,-->
+<!--            contentType: 'application/json; charset=utf-8',-->
+<!--            data: JSON.stringify(JSONObject),-->
+<!--            dataType: 'json',-->
+<!--            async: true,-->
+<!--            success: function(result) {-->
+<!--                alert('Время: ' + result.time-->
+<!--                    + ', сообщение: ' + result.message);-->
+<!--            },-->
+<!--            error: function(jqXHR, textStatus, errorThrown) {-->
+<!--                alert(jqXHR.status + ' ' + jqXHR.responseText);-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+<!--    var RestPost = function() {-->
+<!--        $.ajax({-->
+<!--            type: 'POST',-->
+<!--            url:  prefix,-->
+<!--            dataType: 'json',-->
+<!--            async: true,-->
+<!--            success: function(result) {-->
+<!--                alert('Время: ' + result.time-->
+<!--                    + ', сообщение: ' + result.message);-->
+<!--            },-->
+<!--            error: function(jqXHR, textStatus, errorThrown) {-->
+<!--                alert(jqXHR.status + ' ' + jqXHR.responseText);-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+<!--    var RestDelete = function() {-->
+<!--        $.ajax({-->
+<!--            type: 'DELETE',-->
+<!--            url:  prefix + '/' + Date.now(),-->
+<!--            dataType: 'json',-->
+<!--            async: true,-->
+<!--            success: function(result) {-->
+<!--                alert('Время: ' + result.time-->
+<!--                    + ', сообщение: ' + result.message);-->
+<!--            },-->
+<!--            error: function(jqXHR, textStatus, errorThrown) {-->
+<!--                alert(jqXHR.status + ' ' + jqXHR.responseText);-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+<!--</script>-->
+
+
+
+<!--<h3>Это простой пример использования REST c помощью Ajax</h3>-->
+
+<!--<button type="button" onclick="RestGet()">Метод GET</button>-->
+<!--<button type="button" onclick="RestPost()">Метод POST</button>-->
+<!--<button type="button" onclick="RestDelete()">Метод DELETE</button>-->
+<!--<button type="button" onclick="RestPut()">Метод PUT</button>-->
+<!--<button type="button" onclick="showTime()">Show Time</button>-->
+
+<!--<div id="content">-->
+<!--    <h1>Test content is</h1>;-->
+<!--</div>-->
+
+
+
 </body>
 </html>
