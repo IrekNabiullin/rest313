@@ -12,6 +12,7 @@ $(document).ready(function () {
         }
         $("#tableUserList").append($(tr.join('')));
     });
+
     $(document).delegate('button[id^=edit]', 'click',function () {
         let atrId = $(this).parent().prev().prev().prev().prev().attr("id");            //id
         let atrName = $(this).parent().prev().prev().prev().attr("name");               //name
@@ -21,6 +22,7 @@ $(document).ready(function () {
         $('input[name=password]').prop("value", atrPassword);
         $("#myModalBox").modal('show');
     });
+
     $(document).delegate('.delete', 'click', function () {
         if (confirm('Do you really want to delete  User with id ?')) {
             let id = $(this).parent().prev().prev().prev().prev().attr("id");
@@ -43,6 +45,7 @@ $(document).ready(function () {
             });
         }
     });
+
     $('#addUser').submit(function () {
         $.post(
             '/user',                                    // адрес обработчика

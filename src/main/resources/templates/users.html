@@ -61,8 +61,8 @@
                 </div>
 
                 <div class="card-body">
-                    <table class="table table-striped" id = "userTable">
-                        <thead>
+                    <table class="table table-striped" id="usersTable">
+
                         <tr>
                             <th class="h5">ID</th>
                             <th class="h5">First Name</th>
@@ -74,63 +74,13 @@
                             <th class="h5">Edit</th>
                             <th class="h5">Delete</th>
                         </tr>
-                        </thead>
 
-                    </table>
-                    <table class="table table-striped" id = "usersTable">
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-<!--<script type="text/javascript">-->
-<!--    async function getUsers() {-->
-<!--        let users = [];-->
-<!--        let user = fetch('/users').then(-->
-<!--            successResponse => {-->
-<!--                if (successResponse.status !== 200) {-->
-<!--                    return null;-->
-<!--                } else {-->
-<!--                    return successResponse.json();-->
-<!--                }-->
-<!--            },-->
-<!--            failResponse => {-->
-<!--                return null;-->
-<!--            }-->
-<!--        );-->
-<!--        users.push(user);-->
-<!--        let results = await Promise.all(users);-->
-
-<!--        document.getElementById('tbody').innerHTML = "<tr>" +-->
-<!--            "<td>" + results[0][0]['id'] + "</td>"-->
-<!--        "<td>" + results[0][0]['name'] + "</td>"-->
-<!--        "<td>" + results[0][0]['last_name'] + "</td>"-->
-<!--        "<td>" + results[0][0]['email'] + "</td>"-->
-<!--        "<td>" + results[0][0]['login'] + "</td>"-->
-<!--        "<td>" + results[0][0]['password'] + "</td>"-->
-<!--        "<td>" + results[0][0]['role'] + "</td>" + "</tr>"-->
-
-<!--        return results;-->
-<!--    }-->
-<!--</script>-->
-
-
-
-<!--<div>-->
-<!--    <script src="../static/js/test2.js"></script>-->
-<!--</div>-->
-<!--<div>-->
-<!--    <script src="../static/js/test3.js"></script>-->
-<!--</div>-->
-
-
-
-
-
-
 
 
 <!-- *************************************************************************-->
@@ -150,7 +100,7 @@
 
     $(document).ready(function () {
         createTable();
-        viewAllUsers();
+        // viewAllUsers();
         defaultModal();
         console.log("Captain’s Log");
     });
@@ -189,39 +139,6 @@
         });
     }
 
-    // async function reqListener() {
-    //     const usersResponse = await userService.findAll();
-    //     const usersJson = usersResponse.text();
-    //     console.log(usersJson);
-    // }
-
-    async function viewAllUsers() {
-        $('#userTable tbody').empty();
-        const usersResponse = await userService.findAll();
-        const usersJson = usersResponse.json();
-        usersJson.then(users => {
-            users.forEach(user => {
-                let userRow = `$(<tr>
-                        <th scope="row">${user.id}</th>
-                        <td>${user.name}</td>
-                        <td>${user.last_name}</td>
-                        <td>${user.email}</td>
-                        <td>${user.login}</td>
-                        <td>${user.password}</td>
-                        <td>${user.roles}</td>
-                        <td class="text-center">
-                            <div class="btn-group" role="group" aria-label="Action Buttons">
-                                <button class="btn btn-primary" data-id="${user.id}" data-action="editUser" data-toggle="modal" data-target="#defaultModal">Edit></button>
-                                <button class="btn btn-danger" data-id="${user.id}" data-action="deleteUser" data-toggle="modal" data-target="#defaultModal">Delete</i></button>
-                            </div>
-                        </td>
-                    </tr>)`;
-                $('#userTable tbody').append(userRow);
-            });
-        });
-    }
-
-
     function createTable() {
         fetch("http://localhost:8080/api/users")
             .then(response => {
@@ -235,6 +152,7 @@
                 })
             });
     }
+
     function addTableRow(user) {
         let end = `<tr id="${user.id}">
                         <td id="userId-${user.id}">${user.id}</td>
@@ -242,9 +160,9 @@
                         <td id="userLastName-${user.id}">${user.lastName}</td>
                         <td id="userEmail-${user.id}">${user.email}</td>
                         <td id="userLogin-${user.id}">${user.login}</td>
-                        <td id="userPassword-${user.id}">${user.password
-        }</td>
-                        <td> <button type="button" class="btn btn-info edit-user" data-toggle="modal" data-target="#modal-edit" id="editButton-${user.id}">Edit</button></td>
+                        <td id="userPassword-${user.id}">${user.password}</td>
+                        <td id="userRoles-${user.id}">${user.roles.map(roles => roles.role)}</td>
+                        <td> <button type="button" class="btn btn-info" data-id="${user.id}" data-action="editUser" data-toggle="modal" data-target="#modal-edit" id="editButton-${user.id}">Edit</button></td>
                         <td><button type="button" class="btn btn-danger delete-row" data-toggle="modal" data-target="#modal-delete" id="deleteButton-${user.id}">Delete</button></td>
             </tr>`;
         $('#usersTable').append(end);
@@ -314,7 +232,8 @@
             const userResponse = await userService.add(data);
 
             if (userResponse.status === 201) {
-                viewAllUsers();
+                // viewAllUsers();
+                createTable();
                 modal.find('.modal-title').html('Success');
                 modal.find('.modal-body').html('User added!');
                 dismissButton.html('Close');
