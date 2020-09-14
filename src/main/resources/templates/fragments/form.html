@@ -1,16 +1,16 @@
 <form class="userForm" th:fragment="userForm" style="display:none;">
     <div class="form-group">
         <label for="user_id">ID</label>
-        <input type="text" class="form-control" id="user_id" name="user_id" placeholder="ID">
-        <div class="invalid-feedback"></div>
+        <input type="text" class="form-control" id="user_id" name="user_id" placeholder="ID" disabled>
+<!--        <div class="invalid-feedback"></div>-->
     </div>
     <div class="form-group">
         <label for="username">First Name</label>
         <input type="text" class="form-control" id="username" name="username" placeholder="User name">
     </div>
     <div class="form-group">
-        <label for="lastname">Last Name</label>
-        <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last name">
+        <label for="last_name">Last Name</label>
+        <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last name">
     </div>
     <div class="form-group">
         <label for="email">Email</label>
@@ -24,14 +24,16 @@
         <label for="password">Password</label>
         <input type="text" class="form-control" id="password" name="password" placeholder="Password">
     </div>
-
-    </div>
     <div class="form-group">
         <label for="roles">Roles</label>
-        <textarea class="form-control" id="roles" name="roles" rows="2"></textarea>
+        <select class="form-control" id="roles"
+                name="roles">
+            <option name="ADMIN" value="USER">USER
+            </option>
+            <option name="USER" value="ADMIN">ADMIN
+            </option>
+        </select>
+<!--        <textarea class="form-control" id="roles" name="roles" rows="2"></textarea>-->
     </div>
-    <div class="form-group">
-        <label for="edit">Edit</label>
-        <textarea class="form-control" id="edit" name="edit" rows="2"></textarea>
-    </div>
+
 </form>

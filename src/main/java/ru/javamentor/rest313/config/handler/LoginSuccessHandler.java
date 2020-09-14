@@ -31,7 +31,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 //            httpServletResponse.sendRedirect("/home");
 //            httpServletResponse.sendRedirect("/hello");
 //            httpServletResponse.sendRedirect("/users");
-            httpServletResponse.sendRedirect("/users1");
+            httpServletResponse.sendRedirect("/users");
 //            httpServletResponse.sendRedirect("/admin");
         } else {
             httpServletResponse.sendRedirect("/profile");

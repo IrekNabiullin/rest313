@@ -79,6 +79,7 @@ public class UserRestControllerV1 {
         boolean deleted = false;
         if (user != null) {
             userService.deleteUser((long) id);
+            System.out.println("REST controller. User with id = " + id + " deleted");
             deleted = true;
         } else {
             deleted = false;
