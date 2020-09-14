@@ -85,10 +85,7 @@
 <div th:replace="fragments/form :: userForm"></div>
 <div th:replace="fragments/table :: viewUserTable"></div>
 
-
-<!-- *************************************************************************-->
-<!-- *****************         скрипт для отображения табалицы         ********-->
-<!--**************************************************************************-->
+<!-- *****************         скрипт для отображения таблицы         ********-->
 
 <script>
     let modal = $('#defaultModal');
@@ -103,7 +100,6 @@
 
     $(document).ready(function () {
         createTable();
-        // viewAllUsers();
         defaultModal();
         console.log("Captain’s Log");
     });
@@ -236,7 +232,6 @@
             const userResponse = await userService.add(data);
 
             if (userResponse.status === 200) {
-                // viewAllUsers();
                 createTable();
                 modal.find('.modal-title').html('Success');
                 modal.find('.modal-body').html('User added!');
@@ -267,7 +262,8 @@
     async function editUser(modal, id) {
         const userResponse = await userService.findById(id);
         const userJson = userResponse.json();
-
+        const rolesResponse = await rolesService.findAll();
+        const rolesJson = rolesResponse.json();
 
         modal.find(modalTitle).html('Edit User');
         let userFormHidden = $('.userForm:hidden')[0];
@@ -288,20 +284,14 @@
             modal.find('#email').val(user.email);
             modal.find('#login').val(user.login);
             modal.find('#password').val(user.password);
-            // modal.find('#roles').val(user.roles.map(roles => roles.role));
-            userJson.then(user => {
-                user.forEach(roles => {
-                    roles.forEach(role => {
-                        if (user.role.id === role.id) {
-                            modal.find('#roles').val(new Option(role.name, role.id, false, true));
-                            console.log("Role.name" + role.name +"Role.id" + role.id);
-                        } else {
-                            modal.find('#roles').val(new Option(role.name, role.id));
-                            console.log("Role.name" + role.name + "Role.id" + role.id);
-                        }
-                    });
-                });
-            });
+            // rolesJson.then(roles => {
+            //     roles.forEach(role => {
+            //         if (user.role.id == role.id)
+            //             modal.find('#role').append(new Option(role.name, role.id, false, true));
+            //         else
+            //             modal.find('#role').append(new Option(role.name, role.id));
+            //     });
+            // });
         });
 
 
@@ -313,7 +303,8 @@
                 let email = userForm.find('#email').val();
                 let login = userForm.find('#login').val();
                 let password = userForm.find('#password').val();
-                let roleId = userForm.find('#role option:selected').val();
+                let roleId = userForm.find('#roleId').val();
+                let roleName = userForm.find('#roleName').val();
                 let data = {
                     id: id,
                     name: username,
@@ -321,8 +312,9 @@
                     email: email,
                     login: login,
                     password: password,
-                    role: {
-                        id: roleId
+                    roles: {
+                        roleId: roleId,
+                        roleName: roleName
                     }
                 };
 
@@ -334,8 +326,6 @@
                     dismissButton.html('Close');
                     modal.find(modalFooter).html(dismissButton);
                     $('#usersTable').find('tr[data-id="' + id + '"]').refresh();
-
-                    // $('#defaultModal').modal('show');
                 } else if (userResponse.status === 400) {
                     userResponse.json().then(response => {
                         response.validationErrors.forEach(function (error) {
@@ -382,25 +372,7 @@
                 modal.find('#login').html(user.login);
                 modal.find('#password').html(user.password);
                 modal.find('#roles').html(user.roles.map(roles => roles.role));
-                // userJson.then(user => {
-                //     user.forEach(roles => {
-                //         roles.forEach(role => {
-                //             if (user.role.id === role.id)
-                //                 modal.find('#role').append(new Option(role.name, role.id, false, true));
-                //             else
-                //                 modal.find('#role').append(new Option(role.name, role.id));
-                //         });
-                //     });
-                // });
 
-                // rolesJson.then(roles => {
-                //     roles.forEach(role => {
-                //         if (user.role.id == role.id)
-                //             modal.find('#role').append(new Option(role.name, role.id, false, true));
-                //         else
-                //             modal.find('#role').append(new Option(role.name, role.id));
-                //     });
-                // });
             });
 
 
