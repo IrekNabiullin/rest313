@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/profile")
-    public String getProfile(Authentication authentication, ModelMap modelMap) {
+    public String getProfle(Authentication authentication, ModelMap modelMap) {
         User user = userService.getUserByName(authentication.getName());
         System.out.println("Profile. Current authority:" + authentication.getAuthorities());
         modelMap.addAttribute("user", user);

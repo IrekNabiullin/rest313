@@ -70,7 +70,21 @@ public class UserDaoImp implements UserDao {
     @Transactional
     @Override
     public void updateUser(User user) {
+        System.out.println("UserDaoImp. User updating, id: " + user.getId());
+        System.out.println("UserDaoImp. User updating, FirstName: " + user.getFirstName());
+        System.out.println("UserDaoImp. User updating, LastName: " + user.getLastName());
+        System.out.println("UserDaoImp. User updating, Email: " + user.getEmail());
+        System.out.println("UserDaoImp. User updating, Login: " + user.getLogin());
+        System.out.println("UserDaoImp. User updating, Password: " + user.getPassword());
+        System.out.println("UserDaoImp. User updating, Roles: " + user.getRoles());
         entityManager.merge(user);
+        System.out.println("UserDaoImp. User updated, id: " + user.getId());
+        System.out.println("UserDaoImp. User updated, FirstName: " + user.getFirstName());
+        System.out.println("UserDaoImp. User updated, LastName: " + user.getLastName());
+        System.out.println("UserDaoImp. User updated, Email: " + user.getEmail());
+        System.out.println("UserDaoImp. User updated, Login: " + user.getLogin());
+        System.out.println("UserDaoImp. User updated, Password: " + user.getPassword());
+        System.out.println("UserDaoImp. User updated, Roles: " + user.getRoles());
         System.out.println("Updating existing user");
     }
 

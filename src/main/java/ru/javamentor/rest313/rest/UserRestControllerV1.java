@@ -58,13 +58,21 @@ public class UserRestControllerV1 {
     @PutMapping(value = "/{id}")
     public ResponseEntity<?> update(@PathVariable(name = "id") int id, @RequestBody User user) {
         System.out.println("REST controller. Updating user with id = " + id);
+        System.out.println("REST controller. User updating, id: " + user.getId());
+        System.out.println("REST controller. User updating, FirstName: " + user.getFirstName());
+        System.out.println("REST controller. User updating, LastName: " + user.getLastName());
+        System.out.println("REST controller. User updating, Email: " + user.getEmail());
+        System.out.println("REST controller. User updating, Login: " + user.getLogin());
+        System.out.println("REST controller. User updating, Password: " + user.getPassword());
+        System.out.println("REST controller. User updating, Roles: " + user.getRoles());
         final User userToUpdate = userService.getUserById((long) id);
         boolean updated = false;
         if (userToUpdate != null) {
-            userService.updateUser(userToUpdate);
+            userService.updateUser(user);
+            System.out.println("REST controller. User with id = " + id + " updated");
             updated = true;
         } else {
-            updated = false;
+            System.out.println("REST controller. Warning. User with id = " + id + "not updated");
         }
 //        final boolean updated = userService.update(user, id);
         return updated
