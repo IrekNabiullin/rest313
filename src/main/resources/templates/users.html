@@ -155,7 +155,7 @@
     function addTableRow(user) {
         let end = `<tr data-id="${user.id}">
                         <td id="userId-${user.id}">${user.id}</td>
-                        <td id="userUsername-${user.id}">${user.username}</td>
+                        <td id="userUsername-${user.id}">${user.firstName}</td>
                         <td id="userLastName-${user.id}">${user.lastName}</td>
                         <td id="userEmail-${user.id}">${user.email}</td>
                         <td id="userLogin-${user.id}">${user.login}</td>
@@ -276,7 +276,7 @@
 
         userJson.then(user => {
             modal.find('#user_id').val(user.id);
-            modal.find('#username').val(user.username);
+            modal.find('#username').val(user.firstName);
             modal.find('#last_name').val(user.lastName);
             modal.find('#email').val(user.email);
             modal.find('#login').val(user.login);
@@ -309,17 +309,16 @@
 
             let roles = $("#roleName").val();
             if (roles.includes("ADMIN")) {
-                updateObject["roles"] = [{"id": 1, "role": 'ADMIN'}]
+                updateObject["roles"] = [{"id": 2, "role": 'ADMIN'}]
                 console.log("Prepare to update user with roles = " + updateObject["roles"]);
             } else {
-                updateObject["roles"] = [{"id": 2, "role": 'USER'}]
+                updateObject["roles"] = [{"id": 1, "role": 'USER'}]
                 console.log("Prepare to update user with roles = " + updateObject["roles"]);
             }
 
             let jsonData = JSON.stringify(updateObject);
             console.log("Prepare to update user. jsonData = " + jsonData);
 
-            // let idToUpdate = userForm.find('#user_id');
             let idToUpdate = updateObject["id"];
 
             const userResponse = await userService.update(idToUpdate, updateObject);
@@ -330,8 +329,9 @@
                 modal.find('.modal-body').html('User updated!');
                 dismissButton.html('Close');
                 modal.find(modalFooter).html(dismissButton);
-                // $('#usersTable').find('tr[data-id="' + id + '"]').refresh();
-                $('#usersTable').reload();
+                // $('#usersTable').find('tr[data-id="' + id + '"]').reload();
+                $('#usersTable').empty();
+                createTable();
 
             } else if (userResponse.status === 400) {
                 userResponse.json().then(response => {
@@ -351,99 +351,7 @@
                     modal.find('.modal-body').prepend(alert);
                 });
             }
-
-
-            // fetch('http://localhost:8080/users/', {
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     method: 'put',
-            //     body: jsonData
-            // })
-            //     .then(newData =>
-            //
-            //         $(`#${newData.id}`).replaceWith(`
-            //         <tr id="${newData.id}">
-            //             <td id="userId-${newData.id}">${newData.id}</td>
-            //             <td id="userUsername-${newData.id}">${newData.username}</td>
-            //             <td id="userLastName-${newData.id}">${newData.lastName}</td>
-            //             <td id="userEmail-${newData.id}">${newData.email}</td>
-            //             <td id="userLogin-${newData.id}">${newData.login}</td>
-            //             <td id="userPassword-${newData.id}">${newData.password}</td>
-            //
-            //             <td> <button class="btn btn-info btn-sm" data-id="${newData.id}" data-action="editUser" data-toggle="modal" data-target="#defaultModal">Edit</button></td>
-            //             <td> <button class="btn btn-danger btn-sm" data-id="${newData.id}" data-action="deleteUser" data-toggle="modal" data-target="#defaultModal">Delete</button></td>
-            //
-            //
-            //             <td> <button type="button" class="btn btn-info edit-user" data-toggle="modal" data-target="#modal-edit" id="editButton-${newData.id}">Edit</button></td>
-            //             <td><button type="button" class="btn btn-danger delete-row" data-toggle="modal" data-target="#modal-delete" id="deleteButton-${newData.id}">Delete</button></td>
-            // </tr>\`;
-            //     `)
-            //     )
-            //     .then(() => {
-            //         $('#modal-edit #close-update-user').click();
-            //         $('#usersTable').empty();
-            //         createTable();
-            //     })
         });
-
-
-        /*
-         * ************** первый вариант updateUser ************************
-         */
-        /*
-                // $('#updateUserButton').click(async function (e) {
-                    $('#updateUserButtonV1').click(async function (e) {
-                        let id = userForm.find('#user_id');
-                        let username = userForm.find('#username').val();
-                        let last_name = userForm.find('#last_name').val();
-                        let email = userForm.find('#email').val();
-                        let login = userForm.find('#login').val();
-                        let password = userForm.find('#password').val();
-                        let roleId = userForm.find('#roleId').val();
-                        let roleName = userForm.find('#roleName').val();
-                        let data = {
-                            id: id,
-                            name: username,
-                            last_name: last_name,
-                            email: email,
-                            login: login,
-                            password: password,
-                            roles: {
-                                roleId: roleId,
-                                roleName: roleName
-                            }
-                        };
-
-                        const userResponse = await userService.update(id, data);
-
-                        if (userResponse.status === 200) {
-                            modal.find('.modal-title').html('Success');
-                            modal.find('.modal-body').html('User updated!');
-                            dismissButton.html('Close');
-                            modal.find(modalFooter).html(dismissButton);
-                            $('#usersTable').find('tr[data-id="' + id + '"]').refresh();
-                        } else if (userResponse.status === 400) {
-                            userResponse.json().then(response => {
-                                response.validationErrors.forEach(function (error) {
-                                    modal.find('#' + error.field).addClass('is-invalid');
-                                    modal.find('#' + error.field).next('.invalid-feedback').text(error.message);
-                                });
-                            });
-                        } else {
-                            userResponse.json().then(response => {
-                                let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert">
-                                ${response.error}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>`;
-                                modal.find('.modal-body').prepend(alert);
-                            });
-                        }
-                    });
-
-         */
     }
 
     async function deleteUser(modal, id) {
@@ -538,131 +446,6 @@
     };
 
 </script>
-
-<!--**************************************************************************-->
-<!--******           тестовые скрипты                *************************-->
-<!--**************************************************************************-->
-
-
-<!--<script>-->
-<!--    const nameValue = document.getElementById('name');-->
-<!--    const lastnameValue = document.getElementById('last_name');-->
-<!--    const emailValue = document.getElementById('email');-->
-<!--    const loginValue = document.getElementById('login');-->
-<!--    const passwordValue = document.getElementById('password');-->
-<!--    const rolesValue = document.getElementById('roles');-->
-<!--    const postsList = document.getElementById('output');fetch('/api/users')-->
-<!--        .then(res => res.json())-->
-<!--        .then(data => renderPosts(data))//Вывод на страницу-->
-<!--    let output = '';    const renderPosts = (posts) => {-->
-<!--        posts.forEach(post => {-->
-<!--            output += `-->
-<!--    <tr>-->
-<!--      <th id="id${post.id}" scope="row">${post.id}</th>-->
-<!--      <td id="name${post.id}">${post.name}</td>-->
-<!--      <td id="name${post.id}">${post.last_name}</td>-->
-<!--      <td id="name${post.id}">${post.email}</td>-->
-<!--      <td id="name${post.id}">${post.login}</td>-->
-<!--      <td id="age${post.id}">${post.password}</td>-->
-<!--      <td id="password${post.id}">${post.roles}</td>-->
-<!--      <td><button onclick="openEditModal(${post.id})" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Edit</button></td>-->
-<!--      <td><button onclick="openDeleteModal(${post.id})" class="btn btn-danger" data-toggle="modal" data-target="#deleteExampleModal">Delete</button></td>-->
-<!--    </tr>-->
-<!--`;-->
-<!--        });-->
-<!--        postsList.innerHTML = output;-->
-<!--    }//открывает модалку удаления-->
-<!--    function openDeleteModal(id) {-->
-<!--        console.log(id);-->
-<!--        let name = document.getElementById('name'+id).textContent;-->
-<!--        let last_name = document.getElementById('last_name'+id).textContent;-->
-<!--        let email = document.getElementById('email'+id).textContent;-->
-<!--        let login = document.getElementById('login'+id).textContent;-->
-<!--        let password = document.getElementById('password'+id).textContent;-->
-<!--        let roles = document.getElementById('roles'+id).textContent;-->
-<!--        $('#idDelete').val(id);-->
-<!--        $('#nameDelete').val(name);-->
-<!--        $('#lastNameDelete').val(lastname);-->
-<!--        $('#emailDelete').val(email);-->
-<!--        $('#loginDelete').val(login);-->
-<!--        $('#passwordDelete').val(password);-->
-<!--        $('#rolesDelete').val(roles);-->
-<!--        //кнопка для удаления внутри модалки-->
-<!--        $('.buttonDelete').on('click', function (event) {-->
-<!--            event.preventDefault();-->
-<!--            fetch('/api/users/'+id, {-->
-<!--                method: 'DELETE',-->
-<!--            })-->
-<!--                .then(res => res.text())-->
-<!--                .then(() => location.reload())-->
-<!--        })}//открывает модалку редактирования-->
-<!--    function openEditModal(id) {-->
-<!--        let name = document.getElementById('name'+id).textContent;-->
-<!--        let last_name = document.getElementById('last_name'+id).textContent;-->
-<!--        let email = document.getElementById('email'+id).textContent;-->
-<!--        let login = document.getElementById('login'+id).textContent;-->
-<!--        let password = document.getElementById('password'+id).textContent;-->
-<!--        let roles = document.getElementById('roles'+id).textContent;-->
-<!--        $('#idEdit').val(id);-->
-<!--        $('#nameEdit').val(name);-->
-<!--        $('#lastnameEdit').val(last_name);-->
-<!--        $('#emailEdit').val(email);-->
-<!--        $('#loginEdit').val(login);-->
-<!--        $('#passwordEdit').val(password);-->
-<!--        $('#rolesEdit').val(roles);-->
-<!--    }//кнопка в модалке для редактирования-->
-<!--    $('.buttonEdit').on('click', function (event) {-->
-<!--        event.preventDefault();-->
-<!--        let users = {-->
-<!--            id: $('#idEdit').val(),-->
-<!--            name: $('#nameEdit').val(),-->
-<!--            last_name: $('#lastNameEdit').val(),-->
-<!--            login: $('#loginEdit').val(),-->
-<!--            password: $('#passwordEdit').val(),-->
-<!--            roles: $('#rolesEdit').val()-->
-<!--        };-->
-<!--        fetch('/api/users/update', {-->
-<!--            method:'PUT',-->
-<!--            headers: {-->
-<!--                'Accept': 'application/json, text/plain, */*',-->
-<!--                'Content-type':'application/json'-->
-<!--            },-->
-<!--            body:JSON.stringify(users)-->
-<!--        }).then(res => res.text())-->
-<!--            .then(() => location.reload())-->
-<!--    });-->
-
-<!--    $(document).ready(function() {      //Post - добавление данных-->
-<!--        document.getElementById('addData').addEventListener('submit', addData);//post-->
-<!--        function addData(e){-->
-<!--            // e.preventDefault();        console.log(rolesValue.value);        fetch('/api/users/add', {-->
-<!--            e.preventDefault();        console.log(rolesValue.value);        fetch('/api/users/', {-->
-<!--                method:'POST',-->
-<!--                headers: {-->
-<!--                    'Accept': 'application/json, text/plain, */*',-->
-<!--                    'Content-type':'application/json'-->
-<!--                },-->
-<!--                body:JSON.stringify({-->
-<!--                    name:nameValue.value,-->
-<!--                    last_name:lastnameValue.value,-->
-<!--                    email:emailValue.value,-->
-<!--                    login:loginValue.value,-->
-<!--                    password:passwordValue.value,-->
-<!--                    role_id:rolesValue.value-->
-<!--                })-->
-<!--            })-->
-<!--                .then(res => res.json())-->
-<!--                .then(data => {-->
-<!--                    const dataArr = [];-->
-<!--                    dataArr.push(data);-->
-<!--                    renderPosts(dataArr);-->
-<!--                })-->
-<!--        }-->
-<!--    });-->
-<!--</script>-->
-
-
-<!--<script src="../static/js/main.js"></script>-->
 
 </body>
 </html>

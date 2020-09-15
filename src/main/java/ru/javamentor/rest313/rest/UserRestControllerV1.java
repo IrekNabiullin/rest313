@@ -49,7 +49,6 @@ public class UserRestControllerV1 {
     public ResponseEntity<User> read(@PathVariable(name = "id") int id) {
         System.out.println("REST controller. Reading user with id = " + id);
         final User user = userService.getUserById((long) id);
-
         return user != null
                 ? new ResponseEntity<>(user, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);

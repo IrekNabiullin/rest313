@@ -1,355 +1,447 @@
-let modal = $('#defaultModal');
-let modalTitle = $('.modal-title');
-let modalBody = $('.modal-body');
-let modalFooter = $('.modal-footer');
-
-let clearFormButton = $('<button type="reset" class="btn btn-secondary">Clear</button>');
-let primaryButton = $('<button type="button" class="btn btn-primary">Btn1</button>');
-let dismissButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal">Btn2</button>');
-let dangerButton = $('<button type="button" class="btn btn-danger">Btn3</button>');
-
-$(document).ready(function(){
-    viewAllUsers();
-    defaultModal();
-    console.log("Captain’s Log");
-});
-
-function defaultModal() {
-    modal.modal({
-        keyboard: true,
-        backdrop: "static",
-        show: false,
-    }).on("show.bs.modal", function(event){
-        let button = $(event.relatedTarget);
-        let id = button.data('id');
-        let action = button.data('action');
-        switch(action) {
-            case 'viewUser':
-                viewUser($(this), id);
-                break;
-
-            case 'addUser':
-                addUser($(this));
-                break;
-
-            case 'editUser':
-                editUser($(this), id);
-                break;
-
-            case 'deleteUser':
-                deleteUser($(this), id);
-                break;
-
-            case 'viewCategory':
-                viewCategory($(this), id);
-                break;
-
-            case 'addCategory':
-                addCategory($(this));
-                break;
-
-            case 'editCategory':
-                editCategory($(this), id);
-                break;
-        }
-    }).on('hidden.bs.modal', function(event){
-        $(this).find('.modal-title').html('');
-        $(this).find('.modal-body').html('');
-        $(this).find('.modal-footer').html('');
-    });
-}
-
-async function viewAllUsers() {
-    $('#userTable tbody').empty();
-    const usersResponse = await userService.findAll();
-    const usersJson = usersResponse.json();
-    usersJson.then(users => {
-        users.forEach(user => {
-            let userRow = `$(<tr>
-                        <th scope="row">${user.id}</th>
-                        <td>${user.title}</td>
-                        <td>${user.edition}</td>
-                        <td>${user.author}</td>
-                        <td>${user.category.name}</td>
-                        <td class="text-center">
-                            <div class="btn-group" role="group" aria-label="Action Buttons">
-                                <button class="btn btn-info btn-sm" data-id="${user.id}" data-action="viewUser" data-toggle="modal" data-target="#defaultModal"><i class="far fa-eye"></i></button>
-                                <button class="btn btn-success btn-sm" data-id="${user.id}" data-action="editUser" data-toggle="modal" data-target="#defaultModal"><i class="far fa-edit"></i></button>
-                                <button class="btn btn-danger btn-sm" data-id="${user.id}" data-action="deleteUser" data-toggle="modal" data-target="#defaultModal"><i class="far fa-trash-alt"></i></button>
-                            </div>
-                        </td>
-                    </tr>)`;
-            $('#userTable tbody').append(userRow);
-        });
-    });
-}
-
-async function viewUser(modal, id) {
-    const userResponse = await userService.findById(id);
-    const userJson = userResponse.json();
-
-    modal.find(modalTitle).html('View User');
-    let viewUserTableHidden = $('.viewUserTable:hidden')[0];
-    modal.find(modalBody).html($(viewUserTableHidden).clone());
-    let viewUserTable = modal.find('.viewUserTable');
-    modal.find(viewUserTable).show();
-    dismissButton.html('Close');
-    modal.find(modalFooter).append(dismissButton);
-
-    userJson.then(user => {
-        modal.find('#id').html(user.id);
-        modal.find('#title').html(user.title);
-        modal.find('#edition').html(user.edition);
-        modal.find('#author').html(user.author);
-        modal.find('#userDescription').html(user.description);
-        modal.find('#category').html(user.category.name);
-    });
-}
-
-async function addUser(modal) {
-    const categoriesResponse = await categoryService.findAll();
-    const categoriesJson = categoriesResponse.json();
-
-    modal.find(modalTitle).html('Add User');
-    let userFormHidden = $('.userForm:hidden')[0];
-    modal.find(modalBody).html($(userFormHidden).clone());
-    let userForm = modal.find('.userForm');
-    userForm.prop('id', 'addUserForm');
-    modal.find(userForm).show();
-    dismissButton.html('Cancel');
-    modal.find(modalFooter).append(dismissButton);
-    primaryButton.prop('id', 'saveUserButton');
-    primaryButton.html('Save');
-    modal.find(modalFooter).append(primaryButton);
-    categoriesJson.then(categories => {
-        categories.forEach(category => {
-            modal.find('#category').append(new Option(category.name, category.id));
-        });
-    });
-
-    $('#saveUserButton').click(async function(e){
-        let title = userForm.find('#title').val().trim();
-        let edition = userForm.find('#edition').val().trim();
-        let author = userForm.find('#author').val().trim();
-        let userDescription = userForm.find('#userDescription').val().trim();
-        let categoryId = userForm.find('#category option:selected').val().trim();
-        let data = {
-            title: title,
-            edition: edition,
-            author: author,
-            description: userDescription,
-            category: {
-                id: categoryId
-            }
-        };
-
-        const userResponse = await userService.add(data);
-
-        if (userResponse.status == 201) {
-            viewAllUsers();
-            modal.find('.modal-title').html('Success');
-            modal.find('.modal-body').html('User added!');
-            dismissButton.html('Close');
-            modal.find(modalFooter).html(dismissButton);
-            $('#defaultModal').modal('show');
-        } else if (userResponse.status == 400) {
-            userResponse.json().then(response => {
-                response.validationErrors.forEach(function(error){
-                    modal.find('#' + error.field).addClass('is-invalid');
-                    modal.find('#' + error.field).next('.invalid-feedback').text(error.message);
-                });
-            });
-        } else {
-            userResponse.json().then(response => {
-                let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert">
-                        ${response.error}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>`;
-                modal.find('.modal-body').prepend(alert);
-            });
-        }
-    });
-}
-
-async function editUser(modal, id) {
-    const userResponse = await userService.findById(id);
-    const userJson = userResponse.json();
-    const categoriesResponse = await categoryService.findAll();
-    const categoriesJson = categoriesResponse.json();
-
-    let idInput = `<div class="form-group">
-            <label for="id">ID</label>
-            <input type="text" class="form-control" id="id" name="id" disabled>
-            <div class="invalid-feedback"></div>
-        </div>`;
-
-    modal.find(modalTitle).html('Edit User');
-    let userFormHidden = $('.userForm:hidden')[0];
-    modal.find(modalBody).html($(userFormHidden).clone());
-    let userForm = modal.find('.userForm');
-    userForm.prop('id', 'updateUserForm');
-    modal.find(userForm).prepend(idInput);
-    modal.find(userForm).show();
-    dismissButton.html('Cancel');
-    modal.find(modalFooter).append(dismissButton);
-    primaryButton.prop('id', 'updateUserButton');
-    primaryButton.html('Update');
-    modal.find(modalFooter).append(primaryButton);
-
-    userJson.then(user => {
-        modal.find('#id').val(user.id);
-        modal.find('#title').val(user.title);
-        modal.find('#edition').val(user.edition);
-        modal.find('#author').val(user.author);
-        modal.find('#userDescription').val(user.description);
-        categoriesJson.then(categories => {
-            categories.forEach(category => {
-                if (user.category.id == category.id)
-                    modal.find('#category').append(new Option(category.name, category.id, false, true));
-                else
-                    modal.find('#category').append(new Option(category.name, category.id));
-            });
-        });
-    });
-
-
-    $('#updateUserButton').click(async function(e){
-        let id = userForm.find('#id').val().trim();
-        let title = userForm.find('#title').val().trim();
-        let edition = userForm.find('#edition').val().trim();
-        let author = userForm.find('#author').val().trim();
-        let userDescription = userForm.find('#userDescription').val().trim();
-        let categoryId = userForm.find('#category option:selected').val().trim();
-        let data = {
-            id: id,
-            title: title,
-            edition: edition,
-            author: author,
-            description: userDescription,
-            category: {
-                id: categoryId
-            }
-        };
-
-        const userResponse = await userService.update(id, data);
-
-        if (userResponse.status == 200) {
-            viewAllUsers();
-            modal.find('.modal-title').html('Success');
-            modal.find('.modal-body').html('User updated!');
-            dismissButton.html('Close');
-            modal.find(modalFooter).html(dismissButton);
-            $('#defaultModal').modal('show');
-        } else if (userResponse.status == 400) {
-            userResponse.json().then(response => {
-                response.validationErrors.forEach(function(error){
-                    modal.find('#' + error.field).addClass('is-invalid');
-                    modal.find('#' + error.field).next('.invalid-feedback').text(error.message);
-                });
-            });
-        } else {
-            userResponse.json().then(response => {
-                let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert">
-                        ${response.error}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>`;
-                modal.find('.modal-body').prepend(alert);
-            });
-        }
-    });
-}
-
-async function deleteUser(modal, id) {
-    const userResponse = await userService.findById(id);
-    const userJson = userResponse.json();
-
-    modal.find(modalTitle).html('Delete User');
-    let message = '<strong>Are you sure to delete the following user?</strong>';
-    modal.find(modalBody).html(message);
-    let viewUserTableHidden = $('.viewUserTable:hidden')[0];
-    modal.find(modalBody).append($(viewUserTableHidden).clone());
-    let viewUserTable = modal.find('.viewUserTable');
-    modal.find(viewUserTable).show();
-    dismissButton.html('Close');
-    modal.find(modalFooter).append(dismissButton);
-    dangerButton.prop('id', 'deleteUserButton');
-    dangerButton.html('Delete');
-    modal.find(modalFooter).append(dangerButton);
-
-    userJson.then(user => {
-        modal.find('#id').html(user.id);
-        modal.find('#title').html(user.title);
-        modal.find('#edition').html(user.edition);
-        modal.find('#author').html(user.author);
-        modal.find('#userDescription').html(user.description);
-        modal.find('#category').html(user.category.name);
-    });
-
-    $('#deleteUserButton').click(async function(e){
-        const userResponse = await userService.delete(id);
-
-        if (userResponse.status == 204) {
-            viewAllUsers();
-            modal.find('.modal-title').html('Success');
-            modal.find('.modal-body').html('User deleted!');
-            dismissButton.html('Close');
-            modal.find(modalFooter).html(dismissButton);
-            $('#defaultModal').modal('show');
-        } else {
-            userResponse.json().then(response => {
-                let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert">
-                            ${response.error}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>`;
-                modal.find('.modal-body').prepend(alert);
-            });
-        }
-    });
-}
-
-
-const http = {
-    fetch: async function(url, options = {}) {
-        const response = await fetch(url, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            ...options,
-        });
-
-        return response;
-    }
-};
-
-const userService = {
-    findAll: async () => {
-        return await http.fetch('/api/users');
-    },
-    add: async (data) => {
-        return await http.fetch('/api/users', {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-    },
-    findById: async (id) => {
-        return await http.fetch('/api/users/' + id);
-    },
-    update: async (id, data) => {
-        return await http.fetch('/api/users/' + id, {
-            method: 'PUT',
-            body: JSON.stringify(data)
-        });
-    },
-    delete: async (id) => {
-        return await http.fetch('/api/users/' + id, {
-            method: 'DELETE'
-        });
-    },
-};
+// let modal = $('#defaultModal');
+// let modalTitle = $('.modal-title');
+// let modalBody = $('.modal-body');
+// let modalFooter = $('.modal-footer');
+//
+// let clearFormButton = $('<button type="reset" class="btn btn-secondary">Clear</button>');
+// let primaryButton = $('<button type="button" class="btn btn-primary"></button>');
+// let dismissButton = $('<button type="button" class="btn btn-secondary" data-dismiss="modal"></button>');
+// let dangerButton = $('<button type="button" class="btn btn-danger"></button>');
+//
+// $(document).ready(function () {
+//     createTable();
+//     defaultModal();
+//     console.log("Captain’s Log");
+// });
+//
+//
+// function defaultModal() {
+//     modal.modal({
+//         keyboard: true,
+//         backdrop: "static",
+//         show: false,
+//     }).on("show.bs.modal", function (event) {
+//         let button = $(event.relatedTarget);
+//         let id = button.data('id');
+//         let action = button.data('action');
+//         switch (action) {
+//             case 'viewUser':
+//                 viewUser($(this), id);
+//                 break;
+//
+//             case 'addUser':
+//                 addUser($(this));
+//                 break;
+//
+//             case 'editUser':
+//                 editUser($(this), id);
+//                 break;
+//
+//             case 'deleteUser':
+//                 deleteUser($(this), id);
+//                 break;
+//         }
+//     }).on('hidden.bs.modal', function (event) {
+//         $(this).find('.modal-title').html('');
+//         $(this).find('.modal-body').html('');
+//         $(this).find('.modal-footer').html('');
+//     });
+// }
+//
+// function createTable() {
+//     fetch("http://localhost:8080/api/users")
+//         .then(response => {
+//             response.json().then(data => {
+//                 if (data.length > 0) {
+//                     let temp = "";
+//                     data.forEach(function (user) {
+//                         addTableRow(user);
+//                     })
+//                 }
+//             })
+//         });
+// }
+//
+// function addTableRow(user) {
+//     let end = `<tr data-id="${user.id}">
+//                         <td id="userId-${user.id}">${user.id}</td>
+//                         <td id="userUsername-${user.id}">${user.username}</td>
+//                         <td id="userLastName-${user.id}">${user.lastName}</td>
+//                         <td id="userEmail-${user.id}">${user.email}</td>
+//                         <td id="userLogin-${user.id}">${user.login}</td>
+//                         <td id="userPassword-${user.id}">${user.password}</td>
+//                         <td id="userRoles-${user.id}">${user.roles.map(roles => roles.role)}</td>
+//                         <td> <button class="btn btn-info btn-sm" data-id="${user.id}" data-action="editUser" data-toggle="modal" data-target="#defaultModal">Edit</button></td>
+//                         <td> <button class="btn btn-danger btn-sm" data-id="${user.id}" data-action="deleteUser" data-toggle="modal" data-target="#defaultModal">Delete</button></td>
+//                     </tr>`;
+//     $('#usersTable').append(end);
+// }
+//
+// async function viewUser(modal, id) {
+//     const userResponse = await userService.findById(id);
+//     const userJson = userResponse.json();
+//
+//     modal.find(modalTitle).html('View User');
+//     let viewUserTableHidden = $('.viewUserTable:hidden')[0];
+//     modal.find(modalBody).html($(viewUserTableHidden).clone());
+//     let viewUserTable = modal.find('.viewUserTable');
+//     modal.find(viewUserTable).show();
+//     dismissButton.html('Close');
+//     modal.find(modalFooter).append(dismissButton);
+//
+//     userJson.then(user => {
+//         modal.find('#user_id').html(user.id);
+//         modal.find('#username').html(user.username);
+//         modal.find('#last_name').html(user.lastName);
+//         modal.find('#email').html(user.email);
+//         modal.find('#login').html(user.login);
+//         modal.find('#password').html(user.password);
+//         modal.find('#roles').html(user.roles.map(roles => roles.role));
+//     });
+// }
+//
+// async function addUser(modal) {
+//     const rolesResponse = await userService.findAll();
+//     const rolesJson = rolesResponse.json();
+//
+//     modal.find(modalTitle).html('Add User');
+//     let userFormHidden = $('.userForm:hidden')[0];
+//     modal.find(modalBody).html($(userFormHidden).clone());
+//     let userForm = modal.find('.userForm');
+//     userForm.prop('id', 'addUserForm');
+//     modal.find(userForm).show();
+//     dismissButton.html('Cancel');
+//     modal.find(modalFooter).append(dismissButton);
+//     primaryButton.prop('id', 'saveUserButton');
+//     primaryButton.html('Save');
+//     modal.find(modalFooter).append(primaryButton);
+//     rolesJson.then(roles => {
+//         roles.forEach(role => {
+//             modal.find('#role').append(new Option(role.name, role.id));
+//         });
+//     });
+//
+//     $('#saveUserButton').click(async function (e) {
+//         let username = userForm.find('#username').val().trim();
+//         let last_name = userForm.find('#last_name').val().trim();
+//         let email = userForm.find('#email').val().trim();
+//         let login = userForm.find('#logn').val().trim();
+//         let password = userForm.find('#password').val().trim();
+//         let roleId = userForm.find('#role option:selected').val().trim();
+//         let data = {
+//             name: username,
+//             last_name: last_name,
+//             email: email,
+//             login: login,
+//             password: password,
+//             role: {
+//                 id: roleId
+//             }
+//         };
+//
+//         const userResponse = await userService.add(data);
+//
+//         if (userResponse.status === 200) {
+//             createTable();
+//             modal.find('.modal-title').html('Success');
+//             modal.find('.modal-body').html('User added!');
+//             dismissButton.html('Close');
+//             modal.find(modalFooter).html(dismissButton);
+//             $('#defaultModal').modal('show');
+//         } else if (userResponse.status === 400) {
+//             userResponse.json().then(response => {
+//                 response.validationErrors.forEach(function (error) {
+//                     modal.find('#' + error.field).addClass('is-invalid');
+//                     modal.find('#' + error.field).next('.invalid-feedback').text(error.message);
+//                 });
+//             });
+//         } else {
+//             userResponse.json().then(response => {
+//                 let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert">
+//                         ${response.error}
+//                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+//                             <span aria-hidden="true">&times;</span>
+//                         </button>
+//                     </div>`;
+//                 modal.find('.modal-body').prepend(alert);
+//             });
+//         }
+//     });
+// }
+//
+// async function editUser(modal, id) {
+//     const userResponse = await userService.findById(id);
+//     const userJson = userResponse.json();
+//     modal.find(modalTitle).html('Edit User');
+//     let userFormHidden = $('.userForm:hidden')[0];
+//     modal.find(modalBody).html($(userFormHidden).clone());
+//     let userForm = modal.find('.userForm');
+//     userForm.prop('id', 'updateUserForm');
+//     modal.find(userForm).show();
+//     dismissButton.html('Cancel');
+//     modal.find(modalFooter).append(dismissButton);
+//     primaryButton.prop('id', 'updateUserButton');
+//     primaryButton.html('Update');
+//     modal.find(modalFooter).append(primaryButton);
+//
+//     userJson.then(user => {
+//         modal.find('#user_id').val(user.id);
+//         modal.find('#username').val(user.username);
+//         modal.find('#last_name').val(user.lastName);
+//         modal.find('#email').val(user.email);
+//         modal.find('#login').val(user.login);
+//         modal.find('#password').val(user.password);
+//         // rolesJson.then(roles => {
+//         //     roles.forEach(role => {
+//         //         if (user.role.id == role.id)
+//         //             modal.find('#role').append(new Option(role.name, role.id, false, true));
+//         //         else
+//         //             modal.find('#role').append(new Option(role.name, role.id));
+//         //     });
+//         // });
+//     });
+//
+//
+//     $('#updateUserButton').on('click', async function (e) {
+//         let updateObject = {};
+//         updateObject["id"] = $("#user_id").val();
+//         console.log("Prepare to update user with id = " + updateObject["id"]);
+//         updateObject["firstName"] = $("#username").val();
+//         console.log("Prepare to update user with username = " + updateObject["username"]);
+//         updateObject["lastName"] = $("#last_name").val();
+//         console.log("Prepare to update user with last_name = " + updateObject["last_name"]);
+//         updateObject["email"] = $("#email").val();
+//         console.log("Prepare to update user with email = " + updateObject["email"]);
+//         updateObject["login"] = $("#login").val();
+//         console.log("Prepare to update user with login = " + updateObject["login"]);
+//         updateObject["password"] = $("#password").val();
+//         console.log("Prepare to update user with password = " + updateObject["password"]);
+//
+//         let roles = $("#roleName").val();
+//         if (roles.includes("ADMIN")) {
+//             updateObject["roles"] = [{"id": 1, "role": 'ADMIN'}]
+//             console.log("Prepare to update user with roles = " + updateObject["roles"]);
+//         } else {
+//             updateObject["roles"] = [{"id": 2, "role": 'USER'}]
+//             console.log("Prepare to update user with roles = " + updateObject["roles"]);
+//         }
+//
+//         let jsonData = JSON.stringify(updateObject);
+//         console.log("Prepare to update user. jsonData = " + jsonData);
+//
+//         let idToUpdate = updateObject["id"];
+//
+//         const userResponse = await userService.update(idToUpdate, updateObject);
+//         console.log("Updating user with id = " + idToUpdate);
+//
+//         if (userResponse.status === 200) {
+//             modal.find('.modal-title').html('Success');
+//             modal.find('.modal-body').html('User updated!');
+//             dismissButton.html('Close');
+//             modal.find(modalFooter).html(dismissButton);
+//             // $('#usersTable').find('tr[data-id="' + id + '"]').refresh();
+//             $('#usersTable').reload();
+//
+//         } else if (userResponse.status === 400) {
+//             userResponse.json().then(response => {
+//                 response.validationErrors.forEach(function (error) {
+//                     modal.find('#' + error.field).addClass('is-invalid');
+//                     modal.find('#' + error.field).next('.invalid-feedback').text(error.message);
+//                 });
+//             });
+//         } else {
+//             userResponse.json().then(response => {
+//                 let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert">
+//                         ${response.error}
+//                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+//                             <span aria-hidden="true">&times;</span>
+//                         </button>
+//                     </div>`;
+//                 modal.find('.modal-body').prepend(alert);
+//             });
+//         }
+//
+//
+//         // fetch('http://localhost:8080/users/', {
+//         //     headers: {
+//         //         'Content-Type': 'application/json'
+//         //     },
+//         //     method: 'put',
+//         //     body: jsonData
+//         // })
+//         //     .then(newData =>
+//         //
+//         //         $(`#${newData.id}`).replaceWith(`
+//         //         <tr id="${newData.id}">
+//         //             <td id="userId-${newData.id}">${newData.id}</td>
+//         //             <td id="userUsername-${newData.id}">${newData.username}</td>
+//         //             <td id="userLastName-${newData.id}">${newData.lastName}</td>
+//         //             <td id="userEmail-${newData.id}">${newData.email}</td>
+//         //             <td id="userLogin-${newData.id}">${newData.login}</td>
+//         //             <td id="userPassword-${newData.id}">${newData.password}</td>
+//         //
+//         //             <td> <button class="btn btn-info btn-sm" data-id="${newData.id}" data-action="editUser" data-toggle="modal" data-target="#defaultModal">Edit</button></td>
+//         //             <td> <button class="btn btn-danger btn-sm" data-id="${newData.id}" data-action="deleteUser" data-toggle="modal" data-target="#defaultModal">Delete</button></td>
+//         //
+//         //
+//         //             <td> <button type="button" class="btn btn-info edit-user" data-toggle="modal" data-target="#modal-edit" id="editButton-${newData.id}">Edit</button></td>
+//         //             <td><button type="button" class="btn btn-danger delete-row" data-toggle="modal" data-target="#modal-delete" id="deleteButton-${newData.id}">Delete</button></td>
+//         // </tr>\`;
+//         //     `)
+//         //     )
+//         //     .then(() => {
+//         //         $('#modal-edit #close-update-user').click();
+//         //         $('#usersTable').empty();
+//         //         createTable();
+//         //     })
+//     });
+//
+//
+//     /*
+//      * ************** первый вариант updateUser ************************
+//      */
+//     /*
+//             // $('#updateUserButton').click(async function (e) {
+//                 $('#updateUserButtonV1').click(async function (e) {
+//                     let id = userForm.find('#user_id');
+//                     let username = userForm.find('#username').val();
+//                     let last_name = userForm.find('#last_name').val();
+//                     let email = userForm.find('#email').val();
+//                     let login = userForm.find('#login').val();
+//                     let password = userForm.find('#password').val();
+//                     let roleId = userForm.find('#roleId').val();
+//                     let roleName = userForm.find('#roleName').val();
+//                     let data = {
+//                         id: id,
+//                         name: username,
+//                         last_name: last_name,
+//                         email: email,
+//                         login: login,
+//                         password: password,
+//                         roles: {
+//                             roleId: roleId,
+//                             roleName: roleName
+//                         }
+//                     };
+//
+//                     const userResponse = await userService.update(id, data);
+//
+//                     if (userResponse.status === 200) {
+//                         modal.find('.modal-title').html('Success');
+//                         modal.find('.modal-body').html('User updated!');
+//                         dismissButton.html('Close');
+//                         modal.find(modalFooter).html(dismissButton);
+//                         $('#usersTable').find('tr[data-id="' + id + '"]').refresh();
+//                     } else if (userResponse.status === 400) {
+//                         userResponse.json().then(response => {
+//                             response.validationErrors.forEach(function (error) {
+//                                 modal.find('#' + error.field).addClass('is-invalid');
+//                                 modal.find('#' + error.field).next('.invalid-feedback').text(error.message);
+//                             });
+//                         });
+//                     } else {
+//                         userResponse.json().then(response => {
+//                             let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert">
+//                             ${response.error}
+//                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+//                                 <span aria-hidden="true">&times;</span>
+//                             </button>
+//                         </div>`;
+//                             modal.find('.modal-body').prepend(alert);
+//                         });
+//                     }
+//                 });
+//
+//      */
+// }
+//
+// async function deleteUser(modal, id) {
+//     const userResponse = await userService.findById(id);
+//     const userJson = userResponse.json();
+//
+//     modal.find(modalTitle).html('Delete User');
+//     let message = '<strong>Are you sure to delete the following user?</strong>';
+//     modal.find(modalBody).html(message);
+//     let viewUserTableHidden = $('.viewUserTable:hidden')[0];
+//     modal.find(modalBody).append($(viewUserTableHidden).clone());
+//     let viewUserTable = modal.find('.viewUserTable');
+//     modal.find(viewUserTable).show();
+//     dismissButton.html('Close');
+//     modal.find(modalFooter).append(dismissButton);
+//     dangerButton.prop('id', 'deleteUserButton');
+//     dangerButton.html('Delete');
+//     modal.find(modalFooter).append(dangerButton);
+//
+//     userJson.then(user => {
+//         modal.find('#user_id').html(user.id);
+//         modal.find('#username').html(user.username);
+//         modal.find('#last_name').html(user.lastName);
+//         modal.find('#email').html(user.email);
+//         modal.find('#login').html(user.login);
+//         modal.find('#password').html(user.password);
+//         modal.find('#roles').html(user.roles.map(roles => roles.role));
+//         console.log("Roles map = " + user.roles.map(roles => roles.role));
+//     });
+//
+//
+//     $('#deleteUserButton').click(async function (e) {
+//         const userResponse = await userService.delete(id);
+//         if (userResponse.status === 200) {
+//             modal.find('.modal-title').html('Success');
+//             modal.find('.modal-body').html('User deleted!');
+//             dismissButton.html('Close');
+//             modal.find(modalFooter).html(dismissButton);
+//             $('#usersTable').find('tr[data-id="' + id + '"]').remove();
+// //                    $('#defaultModal').modal('show');
+//         } else {
+//             userResponse.json().then(response => {
+//                 let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert">
+//                             ${response.error}
+//                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+//                                 <span aria-hidden="true">&times;</span>
+//                             </button>
+//                         </div>`;
+//                 modal.find('.modal-body').prepend(alert);
+//             });
+//         }
+//     });
+// }
+//
+//
+// const http = {
+//     fetch: async function (url, options = {}) {
+//         return await fetch(url, {
+//             headers: {
+//                 'Accept': 'application/json',
+//                 'Content-Type': 'application/json'
+//             },
+//             ...options,
+//         });
+//     }
+// };
+//
+// const userService = {
+//     findAll: async () => {
+//         return await http.fetch('/api/users');
+//     },
+//     add: async (data) => {
+//         return await http.fetch('/api/users', {
+//             method: 'POST',
+//             body: JSON.stringify(data)
+//         });
+//     },
+//     findById: async (id) => {
+//         return await http.fetch('/api/users/' + id);
+//     },
+//     update: async (id, data) => {
+//         return await http.fetch('/api/users/' + id, {
+//             method: 'PUT',
+//             body: JSON.stringify(data)
+//         });
+//     },
+//     delete: async (id) => {
+//         return await http.fetch('/api/users/' + id, {
+//             method: 'DELETE'
+//         });
+//     },
+// };
